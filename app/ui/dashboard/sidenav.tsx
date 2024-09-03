@@ -1,20 +1,27 @@
 import Link from 'next/link';
 import NavLinks from '@/app/ui/dashboard/nav-links';
 import Image from 'next/image';
+import clsx from 'clsx';
 
-export default function SideNav() {
+export default function SideNav({isToggle}: {isToggle: boolean}) {
   return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2">
+    <div className="flex h-full flex-col px-3 py-2 md:px-2 ease-in-out">
       <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
+        className="mb-2 flex h-10 items-center rounded-md p-2 md:h-16"
         href="/"
       >
-        <div className="w-32 text-white md:w-40">
-            <Image src="/landing-page/logo.svg" alt="IHMA Logo" width={40} height={40} />
+        <div className="w-32 text-white md:w-40 flex items-center gap-3">
+            <Image src="/landing-page/logo.svg" alt="IHMA Logo" width={27} height={27} />
+            <p className={clsx(
+              'text-black font-bold ease-in-out duration-300 flex-none',
+              {
+                'md:hidden': !isToggle
+              }
+            )}>IHMA <span className='text-slate-400'>LMS</span></p>
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks />
+        <NavLinks isToggle={isToggle} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         {/* <form
           action={async () => {

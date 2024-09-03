@@ -16,25 +16,30 @@ const links = [
   { name: 'My Account', href: '/dashboard/account', icon: '/dashboard/user.png' },
 ];
 
-export default function NavLinks() {
+export default function NavLinks({isToggle}: {isToggle: boolean}) {
   const pathname = usePathname();
   return (
     <>
       {links.map((link) => {
-        const LinkIcon = link.icon;
         return (
           <Link
             key={link.name}
             href={link.href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm hover:bg-slate-200 hover:text-black md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
+                'bg-slate-200 text-black font-bold': pathname === link.href,
+                'md:items-center md:justify-center': !isToggle
               },
             )}
           >
-            <Image src={link.icon} alt={link.name} width={24} height={24} />
-            <p className="hidden md:block">{link.name}</p>
+            <Image src={link.icon} alt={link.name} width={15} height={15} />
+            <p className={clsx(
+              "hidden md:block ease-in-out duration-300 flex-none",
+              {
+                'md:hidden': !isToggle
+              }
+            )}>{link.name}</p>
           </Link>
         );
       })}
