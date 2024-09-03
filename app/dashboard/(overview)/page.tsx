@@ -4,6 +4,7 @@ import Search from "@/app/ui/dashboard/search"
 import { keyCourses } from "@/app/lib/placeholders"
 import { useState } from "react"
 import Courses from "@/app/ui/dashboard/courses"
+import React, { Suspense } from 'react';
 
 export default function Page() {
     const [search, setSearch] = useState('')
@@ -15,7 +16,9 @@ export default function Page() {
         <div className="flex flex-col px-4">
             <p className="text-lg mb-3">Welcome to the <span className="font-bold">IHMA</span> dashboard</p>
             <div className="flex gap-4 items-center flex-col lg:flex-row mb-5">
-                <Search placeholder="Search for courses" value={search} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Search placeholder="Search for courses" value={search} />
+                </Suspense>
                 <div className="flex gap-4 flex-wrap">
                     {keyCourses.map((course) => {
                         return (

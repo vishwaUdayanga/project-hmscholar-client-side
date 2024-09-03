@@ -1,5 +1,4 @@
 import { CourseList } from "@/app/lib/placeholders";
-import { title } from 'process';
 import Image from "next/image";
 
 export default function Courses() {
@@ -16,7 +15,7 @@ export default function Courses() {
                                         <div key={course.id} className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between">
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
-                                                    <Image src={course.image} alt={course.title} fill objectFit="cover" className="rounded" />
+                                                    <Image src={course.image} alt={course.title} fill style={{ objectFit: 'cover' }} className="rounded" />
                                                 </div>
                                                 <div>
                                                     <p className="text-sm max-w-72 text-slate-800">{course.title}</p>

@@ -39,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   src='/dashboard/user.jpg'
                   alt={'Amanda Peris'}
                   fill
-                  objectFit="cover"
+                  style={{ objectFit: 'cover' }}
                   className="rounded-full"
                 />
               </div>
