@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex gap-6 items-center">
             <Image src="/dashboard/notification.png" alt="IHMA Notification" width={15} height={15} />
             <Link
-              href="/dashboard/account" 
+              href="/dashboard" 
               className="flex gap-2 items-center"
             >
               <div
