@@ -5,6 +5,7 @@ import {zodResolver} from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { SignInSchema } from '@/app/lib/zod-schema'
 import { useState, useEffect } from 'react'
+import { redirect } from 'next/dist/server/api-utils'
 
 
 type FormValues = z.infer<typeof SignInSchema>;
@@ -32,7 +33,7 @@ export default function SignInForm() {
             setButtonText('Login to Dashboard')
         }, 3000)
 
-        console.log(data)
+        window.location.href = '/dashboard'
     };
     return (
         <form className='w-full' onSubmit={handleSubmit(onSubmit)}>

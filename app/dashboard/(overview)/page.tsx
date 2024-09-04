@@ -1,35 +1,32 @@
-'use client'
+// 'use client'
 
 import Search from "@/app/ui/dashboard/search"
-import { keyCourses } from "@/app/lib/placeholders"
-import { useState } from "react"
 import Courses from "@/app/ui/dashboard/courses"
+import Announcements from "@/app/ui/dashboard/announcements"
 import React, { Suspense } from 'react';
+import Image from 'next/image';
+import { CoursesSkeleton, AnnouncementSkeleton } from "@/public/dashboard/skeletons"
 
 export default function Page() {
-    const [search, setSearch] = useState('')
-    const handleSearch = (term: string) => {
-        setSearch(term)
-    }
 
     return (
         <div className="flex flex-col px-4">
             <p className="text-lg mb-3">Welcome to the <span className="font-bold">IHMA</span> dashboard</p>
             <div className="flex gap-4 items-center flex-col lg:flex-row mb-5">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Search placeholder="Search for courses" value={search} />
+                    <Search placeholder="Search for courses" />
                 </Suspense>
-                <div className="flex gap-4 flex-wrap">
-                    {keyCourses.map((course) => {
-                        return (
-                            <div key={course.id} className={`px-3 py-1 ${course.background} ${course.text} rounded-xl text-xs cursor-pointer`} onClick={() => handleSearch(course.title)}>
-                               <p>{course.title}</p>     
-                            </div>
-                        )
-                    })}
-                </div>
             </div>
-            <Courses />
+            <Suspense fallback={<CoursesSkeleton />}>
+                <Courses />
+            </Suspense>
+            <div className="flex items-center w-fit justify-center gap-6 mt-6">
+                <p className="font-bold text-lg">Announcements</p>
+                <Image src="/dashboard/announcements/bell.svg" alt="Announcement" width={20} height={20} />
+            </div>
+            <Suspense fallback={<AnnouncementSkeleton />}>
+                <Announcements />
+            </Suspense>
         </div>
     )
 } 

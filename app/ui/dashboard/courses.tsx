@@ -1,7 +1,9 @@
 import { CourseList } from "@/app/lib/placeholders";
 import Image from "next/image";
 
-export default function Courses() {
+export default async function Courses() {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    
     return (
         <div className="flex flex-col gap-6 w-full lg:flex-row lg:gap-16">
             {CourseList.map((semester) => {

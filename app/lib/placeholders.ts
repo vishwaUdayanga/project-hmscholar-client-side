@@ -1,3 +1,5 @@
+import { date } from "zod"
+
 export const keyCourses = [
     {
         id: 1,
@@ -99,5 +101,52 @@ export const CourseList = [
                 image: '/dashboard/courses/2.jpg'
             }
         ]
+    }
+]
+
+export const announcements = [
+    {
+        id: 1,
+        lecturer: 'Mr. John Doe',
+        title: 'New Courses Available',
+        description: 'We have added new courses to the curriculum. Check them out now!',
+        date: new Date().toDateString(),
+        image: '/dashboard/announcements/1.jpg',
+        tag: 'Administraion',
+        color: 'text-blue-600',
+        time: '10:00 AM'
+    },
+    {
+        id: 2,
+        lecturer: 'Ms. Jane Doe',
+        title: 'New Courses Available',
+        description: 'We have added new courses to the curriculum. Check them out now!',
+        date: new Date().toDateString(),
+        image: '/dashboard/announcements/2.jpg',
+        tag: 'Management',
+        color: 'text-fuchsia-600',
+        time: '10:00 AM'
+    },
+    {
+        id: 3,
+        lecturer: 'Mr. John Doe',
+        title: 'New Courses Available',
+        description: 'We have added new courses to the curriculum. Check them out now!',
+        date: new Date().toDateString(),
+        image: '/dashboard/announcements/3.jpg',
+        tag: 'Hotels',
+        color: 'text-purple-600',
+        time: '10:00 AM'
+    },
+    {
+        id: 4,
+        lecturer: 'Mr. John Doe',
+        title: 'New Courses Available',
+        description: 'We have added new courses to the curriculum. Check them out now!',
+        date: new Date().toDateString(),
+        image: '/dashboard/announcements/4.jpg',
+        tag: 'Administraion',
+        color: 'text-sky-600',
+        time: '10:00 AM'
     }
 ]

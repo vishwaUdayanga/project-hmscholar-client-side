@@ -16,8 +16,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
       <div className={
           clsx(
-            'w-full md:w-64 transition-width duration-300 ease-in-out flex-none',
-            { 'md:w-20': !toggle }
+            'w-full transition-width duration-300 ease-in-out flex-none',
+            { 'md:w-20': !toggle,
+              'md:w-64': toggle
+            }
           )
         } 
       >
