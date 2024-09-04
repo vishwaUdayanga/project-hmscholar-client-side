@@ -10,10 +10,10 @@ const links = [
   { name: 'Home', href: '/dashboard', icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
-    href: '/dashboard/courses',
+    href: '/dashboard',
     icon: '/dashboard/course.png',
   },
-  { name: 'My Account', href: '/dashboard/account', icon: '/dashboard/user.png' },
+  { name: 'My Account', href: '/dashboard', icon: '/dashboard/user.png' },
 ];
 
 export default function NavLinks({isToggle}: {isToggle: boolean}) {
