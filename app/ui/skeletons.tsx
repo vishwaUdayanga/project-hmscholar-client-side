@@ -3,18 +3,18 @@ export function CoursesSkeleton() {
         <div className="flex flex-col gap-6 w-full lg:flex-row lg:gap-16">
             {Array.from({ length: 2 }).map((_, semesterIdx) => (
                 <div key={semesterIdx} className="w-full lg:w-4/12">
-                    <div className="bg-gray-200 animate-pulse h-4 w-3/4 rounded mb-4"></div> {/* Semester name placeholder */}
+                    <div className="bg-gray-200 animate-pulse h-4 w-3/4 rounded mb-4"></div>
                     <div className="flex flex-col gap-5">
                         {Array.from({ length: 4 }).map((_, courseIdx) => (
                             <div key={courseIdx} className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between">
                                 <div className="flex gap-3 items-center w-80">
-                                    <div className="relative w-14 h-10 rounded overflow-hidden bg-gray-300 animate-pulse"></div> {/* Image placeholder */}
+                                    <div className="relative w-14 h-10 rounded overflow-hidden bg-gray-300 animate-pulse"></div> 
                                     <div className="flex flex-col gap-2 w-full">
-                                        <div className="bg-gray-300 animate-pulse h-4 w-3/4 rounded"></div> {/* Title placeholder */}
-                                        <div className="bg-gray-300 animate-pulse h-3 w-1/2 rounded"></div> {/* Lecturer placeholder */}
+                                        <div className="bg-gray-300 animate-pulse h-4 w-3/4 rounded"></div> 
+                                        <div className="bg-gray-300 animate-pulse h-3 w-1/2 rounded"></div> 
                                     </div>
                                 </div>
-                                <div className="bg-gray-300 animate-pulse h-4 w-24 rounded"></div> {/* Credits placeholder */}
+                                <div className="bg-gray-300 animate-pulse h-4 w-24 rounded"></div>
                             </div>
                         ))}
                     </div>

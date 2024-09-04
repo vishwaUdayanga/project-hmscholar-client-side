@@ -1,11 +1,9 @@
-// 'use client'
-
 import Search from "@/app/ui/dashboard/search"
 import Courses from "@/app/ui/dashboard/courses"
 import Announcements from "@/app/ui/dashboard/announcements"
 import React, { Suspense } from 'react';
 import Image from 'next/image';
-import { CoursesSkeleton, AnnouncementSkeleton } from "@/public/dashboard/skeletons"
+import { CoursesSkeleton, AnnouncementSkeleton } from "@/app/ui/skeletons"
 
 export default function Page() {
 
