@@ -15,7 +15,7 @@ export default function Home() {
           Welcome back
         </h1>
         <p className="text-center text-sm text-zinc-500 mt-2 mb-6">Enter your credentials to sign in to your account</p>
-        <SignInForm />
+        <SignInForm type="student" />
       </div>
     </main>
   );

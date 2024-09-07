@@ -10,7 +10,7 @@ import { redirect } from 'next/dist/server/api-utils'
 
 type FormValues = z.infer<typeof SignInSchema>;
 
-export default function SignInForm() {
+export default function SignInForm({type}: {type: string}) {
     const [isLoading, setIsLoading] = useState(false)
     const [buttonText, setButtonText] = useState("Login to Dashboard")
 
@@ -25,15 +25,28 @@ export default function SignInForm() {
 
     
     const onSubmit = async (data: FormValues) => {
-        setIsLoading(true)
-        setButtonText('Loading...')
+        switch (type) {
+            case 'lecturer':
+                // handleLecturerLogin()
+                console.log('lecturer login')
+                break;
+            case 'student':
+                setIsLoading(true)
+                setButtonText('Loading...')
 
-        setTimeout(() => {
-            setIsLoading(false)
-            setButtonText('Login to Dashboard')
-        }, 3000)
+                setTimeout(() => {
+                    setIsLoading(false)
+                    setButtonText('Login to Dashboard')
+                }, 3000)
 
-        window.location.href = '/dashboard'
+                window.location.href = '/dashboard'
+                break;
+            case 'admin':
+                // handleAdminLogin()
+                break
+            default:
+                break;
+        }
     };
     return (
         <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
@@ -54,7 +67,7 @@ export default function SignInForm() {
                                 <input
                                     type="text"
                                     id="registration_number"
-                                    placeholder="Enter your registration number"
+                                    placeholder={type === 'student' ? 'Enter your registration number' : type === 'lecturer' ? 'Enter your staff email' : 'Enter your admin ID'}
                                     className="ml-2 text-black flex-1 outline-none text-sm sm:text-base"
                                     {...field}
                                 />
