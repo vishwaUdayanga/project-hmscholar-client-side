@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
-const links = [
+const student_links = [
   { name: 'Home', href: '/dashboard', icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
@@ -16,8 +16,19 @@ const links = [
   { name: 'My Account', href: '/dashboard', icon: '/dashboard/user.png' },
 ];
 
-export default function NavLinks({isToggle}: {isToggle: boolean}) {
+const lecturer_links = [
+  { name: 'Home', href: '/lecturer/dashboard', icon: '/dashboard/home.png' },
+  {
+    name: 'My Courses',
+    href: '/lecturer/dashboard',
+    icon: '/dashboard/course.png',
+  },
+  { name: 'My Account', href: '/lecturer/dashboard', icon: '/dashboard/user.png' },
+];
+
+export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {
   const pathname = usePathname();
+  const links = actor === 'student' ? student_links : lecturer_links;
   return (
     <>
       {links.map((link) => {

@@ -2,6 +2,7 @@ import { CourseList } from "@/app/lib/placeholders";
 import Image from "next/image";
 
 export default async function Courses() {
+    
     await new Promise((resolve) => setTimeout(resolve, 3000));
     
     return (

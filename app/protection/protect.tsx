@@ -9,7 +9,6 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
         const router = useRouter();
 
         const checkTokenExpiration = () => {
-            console.log('Checking token expiration');
             const token = localStorage.getItem('token');
             if (token) {
                 try {

@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           )
         } 
       >
-        <SideNav isToggle={toggle} />
+        <SideNav isToggle={toggle} actor="student" />
       </div>
       <div className="flex-grow md:overflow-y-auto">
         <div className="w-full justify-between items-center p-4 hidden md:flex">
