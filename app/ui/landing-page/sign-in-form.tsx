@@ -1,21 +1,28 @@
 'use client'
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { SignInSchema } from '@/app/lib/zod-schema'
+import { SignInSchema, SignInSchemaLecturer } from '@/app/lib/zod-schema'
 import { useState, useEffect } from 'react'
 import { redirect } from 'next/dist/server/api-utils'
+import { loginLecturer } from '@/app/api/auth/authentication'
+import { useRouter } from 'next/navigation';
 
 
 type FormValues = z.infer<typeof SignInSchema>;
+type FormValuesLecturer = z.infer<typeof SignInSchemaLecturer>;
 
 export default function SignInForm({type}: {type: string}) {
+    const router = useRouter()
+
     const [isLoading, setIsLoading] = useState(false)
     const [buttonText, setButtonText] = useState("Login to Dashboard")
 
-    const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
-        resolver: zodResolver(SignInSchema),
+    const schema = type === 'student' ? SignInSchema : SignInSchemaLecturer;
+
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(schema),
         mode: 'onTouched',
         defaultValues: {
             registration_number: '',
@@ -24,21 +31,28 @@ export default function SignInForm({type}: {type: string}) {
     });
 
     
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: FormValues | FormValuesLecturer) => {
+        setIsLoading(true)
+        setButtonText('Loading...')
         switch (type) {
             case 'lecturer':
-                // handleLecturerLogin()
-                console.log('lecturer login')
+                // handleLecturerLogin
+                const response = await loginLecturer({email: data.registration_number.toString(), password: data.password.toString()})
+                const response_data = await response.json()
+                if (response.ok) {
+                    localStorage.setItem('token', response_data.access_token);
+                    router.push('/lecturer/dashboard')
+                } else {
+                    setIsLoading(false)
+                    setButtonText('Login to Dashboard')
+                    alert('Please enter valid credentials')
+                }
                 break;
             case 'student':
-                setIsLoading(true)
-                setButtonText('Loading...')
-
                 setTimeout(() => {
                     setIsLoading(false)
                     setButtonText('Login to Dashboard')
                 }, 3000)
-
                 window.location.href = '/dashboard'
                 break;
             case 'admin':
