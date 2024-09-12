@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { SignInSchema, SignInSchemaLecturer } from '@/app/lib/zod-schema'
 import { useState, useEffect } from 'react'
 import { redirect } from 'next/dist/server/api-utils'
-import { loginLecturer, loginAdmin } from '@/app/api/auth/authentication'
+import { loginLecturer, loginAdmin, loginStudent } from '@/app/api/auth/authentication'
 import { useRouter } from 'next/navigation';
 
 
@@ -49,11 +49,16 @@ export default function SignInForm({type}: {type: string}) {
                 }
                 break;
             case 'student':
-                setTimeout(() => {
+                const response_student= await loginStudent({email: data.registration_number.toString(), password: data.password.toString()})
+                const response_data_student = await response_student.json()
+                if (response_student.ok) {
+                    localStorage.setItem('token', response_data_student.access_token);
+                    router.push('/dashboard')
+                } else {
                     setIsLoading(false)
                     setButtonText('Login to Dashboard')
-                }, 3000)
-                window.location.href = '/dashboard'
+                    alert('Please enter valid credentials')
+                }
                 break;
             case 'admin':
                 const response_admin = await loginAdmin({email: data.registration_number.toString(), password: data.password.toString()})
