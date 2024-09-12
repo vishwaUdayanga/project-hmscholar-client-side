@@ -33,7 +33,7 @@ const admin_links = [
     href: '/admin/dashboard/lecturers',
     icon: '/dashboard/course.png',
   },
-  { name: 'Students', href: '/admin/dashboard', icon: '/dashboard/user.png' },
+  { name: 'Students', href: '/admin/dashboard/students', icon: '/dashboard/user.png' },
 ];
 
 export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {

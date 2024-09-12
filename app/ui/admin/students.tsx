@@ -1,54 +1,51 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getLecturers } from "@/app/api/admin/data";
+import { getStudents } from "@/app/api/admin/data";
 import Link from "next/link";
-import { deleteLecturer } from "@/app/api/admin/delete";
+import { deleteStudent } from "@/app/api/admin/delete";
 import Image from "next/image";
 
-type Lecturer = {
-    lecturer_id: string;
-    lecturer_name: string;
-    lecturer_nic: string;
-    lecturer_email: string;
-    lecturer_phone: string;
+type Student = {
+    student_id: string;
+    email: string;
 };
 
-export default function Lecturers() {
+export default function Students() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [lecturers, setLecturers] = useState<Lecturer[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
     useEffect(() => {
-        const fetchLecturers = async () => {
+        const fetchStudents = async () => {
             try {
 
-                const sectionsResponse = await getLecturers();
+                const sectionsResponse = await getStudents();
                 if (!sectionsResponse.ok) {
-                    throw new Error('Failed to fetch lecturers');
+                    throw new Error('Failed to fetch students');
                 }
-                const lecturers: Lecturer[] = await sectionsResponse.json();
-                setLecturers(lecturers);
+                const students: Student[] = await sectionsResponse.json();
+                setStudents(students);
             } catch (error) {
-                console.error('Error fetching lecturers:', error);
-                setError('Error fetching lecturers');
+                console.error('Error fetching students:', error);
+                setError('Error fetching students');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchLecturers();
+        fetchStudents();
     }, []);
 
-    const handleDelete = async (lecturerId: string) => {
+    const handleDelete = async (studentId: string) => {
         try {
-            const response = await deleteLecturer({ lecturerId });
+            const response = await deleteStudent({ studentId });
             if (!response.ok) {
-                throw new Error('Failed to delete lecturer.');
+                throw new Error('Failed to delete student.');
             }
-            setLecturers(lecturers.filter(lecturer => lecturer.lecturer_id !== lecturerId));
+            setStudents(students.filter(student => student.student_id !== studentId));
         } catch (error) {
-            console.error('Error deleting announcement:', error);
-            setError('Error deleting announcement');
+            console.error('Error deleting student:', error);
+            setError('Error deleting student');
         }
     };
 
@@ -57,27 +54,27 @@ export default function Lecturers() {
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
-            {lecturers.map((lecturer) => {
+            {students.map((student) => {
                 return (
-                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={lecturer.lecturer_id}>
+                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={student.student_id}>
                         <div className="flex items-center gap-4">
                             <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                                <Image src='/dashboard/announcements/user.jpg' alt={lecturer.lecturer_name} fill style={{ objectFit: 'cover' }} className="rounded-full" />
+                                <Image src='/dashboard/announcements/user.jpg' alt={student.student_id} fill style={{ objectFit: 'cover' }} className="rounded-full" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-zinc-700">{lecturer.lecturer_name}</p>
-                                <p className="text-xs text-slate-400">{lecturer.lecturer_email}</p>
+                                <p className="text-sm font-bold text-zinc-700">{student.email}</p>
+                                <p className="text-xs text-slate-400">{student.email}</p>
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <Link href={`/admin/dashboard/lecturers/edit-lecturer/${lecturer.lecturer_id}`}>
+                            <Link href={`/admin/dashboard/students/edit-student/${student.student_id}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#c026d3" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                     <path d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(lecturer.lecturer_id)} 
+                                onClick={() => handleDelete(student.student_id)} 
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">

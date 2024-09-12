@@ -1,54 +1,53 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getLecturers } from "@/app/api/admin/data";
+import { getCourses } from "@/app/api/admin/data";
 import Link from "next/link";
-import { deleteLecturer } from "@/app/api/admin/delete";
+import { deleteCourse } from "@/app/api/admin/delete";
 import Image from "next/image";
 
-type Lecturer = {
-    lecturer_id: string;
-    lecturer_name: string;
-    lecturer_nic: string;
-    lecturer_email: string;
-    lecturer_phone: string;
+type Course = {
+    course_id: string;
+    course_name: string;
+    enrollment_key: string;
+    course_description: string;
 };
 
-export default function Lecturers() {
+export default function Courses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [lecturers, setLecturers] = useState<Lecturer[]>([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     useEffect(() => {
-        const fetchLecturers = async () => {
+        const fetchCourses = async () => {
             try {
 
-                const sectionsResponse = await getLecturers();
+                const sectionsResponse = await getCourses();
                 if (!sectionsResponse.ok) {
                     throw new Error('Failed to fetch lecturers');
                 }
-                const lecturers: Lecturer[] = await sectionsResponse.json();
-                setLecturers(lecturers);
+                const courses: Course[] = await sectionsResponse.json();
+                setCourses(courses);
             } catch (error) {
-                console.error('Error fetching lecturers:', error);
-                setError('Error fetching lecturers');
+                console.error('Error fetching courses:', error);
+                setError('Error fetching courses');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchLecturers();
+        fetchCourses();
     }, []);
 
-    const handleDelete = async (lecturerId: string) => {
+    const handleDelete = async (courseId: string) => {
         try {
-            const response = await deleteLecturer({ lecturerId });
+            const response = await deleteCourse({ courseId });
             if (!response.ok) {
-                throw new Error('Failed to delete lecturer.');
+                throw new Error('Failed to delete courses.');
             }
-            setLecturers(lecturers.filter(lecturer => lecturer.lecturer_id !== lecturerId));
+            setCourses(courses.filter(course => course.course_id !== courseId));
         } catch (error) {
-            console.error('Error deleting announcement:', error);
-            setError('Error deleting announcement');
+            console.error('Error deleting courses:', error);
+            setError('Error deleting courses');
         }
     };
 
@@ -57,27 +56,25 @@ export default function Lecturers() {
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
-            {lecturers.map((lecturer) => {
+            {courses.map((course) => {
                 return (
-                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={lecturer.lecturer_id}>
-                        <div className="flex items-center gap-4">
-                            <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                                <Image src='/dashboard/announcements/user.jpg' alt={lecturer.lecturer_name} fill style={{ objectFit: 'cover' }} className="rounded-full" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-zinc-700">{lecturer.lecturer_name}</p>
-                                <p className="text-xs text-slate-400">{lecturer.lecturer_email}</p>
+                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={course.course_id}>
+                        <div>
+                            <p className="text-sm">{course.course_name}</p>
+                            <p className="text-xs text-slate-400 mt-1">{course.enrollment_key}</p>
+                            <div className={`rounded-lg px-3 border-slate-200 border w-fit mt-1 text-fuchsia-600`}>
+                                <p className="text-xs">Y1 SEM1</p>
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <Link href={`/admin/dashboard/lecturers/edit-lecturer/${lecturer.lecturer_id}`}>
+                            <Link href={`/admin/dashboard/edit-course/${course.course_id}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#c026d3" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                     <path d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(lecturer.lecturer_id)} 
+                                onClick={() => handleDelete(course.course_id)} 
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
