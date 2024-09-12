@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getLecturer, getLecturerCourses } from "@/app/api/lecturer/data";
 import { CoursesSkeleton } from '@/app/ui/skeletons';
+import Link from "next/link";
 
 type Course = {
+    course_id: string;
     course_name: string;
     year: number;
     enrollment_key: string;
@@ -61,6 +63,7 @@ export default function Courses() {
 
                 setGroupedCourses(groupCoursesBySemester(courses));
             } catch (error) {
+                console.error('Error fetching courses:', error);
                 setError('Error fetching courses');
             } finally {
                 setLoading(false);
@@ -83,7 +86,7 @@ export default function Courses() {
                             {
                                 groupedCourses[semesterKey].map((course) => {
                                     return (
-                                        <div key={course.enrollment_key} className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between">
+                                        <Link href={`/lecturer/dashboard/view-course/${course.course_id}`} key={course.course_id} className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between">
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
                                                     <Image
@@ -100,7 +103,7 @@ export default function Courses() {
                                                 </div>
                                             </div>
                                             <p className="text-sm flex gap-2">4 <span className="text-slate-300">credits</span></p>
-                                        </div>
+                                        </Link>
                                     )
                                 })
                             }
