@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { SignInSchema, SignInSchemaLecturer } from '@/app/lib/zod-schema'
 import { useState, useEffect } from 'react'
 import { redirect } from 'next/dist/server/api-utils'
-import { loginLecturer } from '@/app/api/auth/authentication'
+import { loginLecturer, loginAdmin } from '@/app/api/auth/authentication'
 import { useRouter } from 'next/navigation';
 
 
@@ -56,7 +56,16 @@ export default function SignInForm({type}: {type: string}) {
                 window.location.href = '/dashboard'
                 break;
             case 'admin':
-                // handleAdminLogin()
+                const response_admin = await loginAdmin({email: data.registration_number.toString(), password: data.password.toString()})
+                const response_data_admin = await response_admin.json()
+                if (response_admin.ok) {
+                    localStorage.setItem('token', response_data_admin.access_token);
+                    router.push('/admin/dashboard')
+                } else {
+                    setIsLoading(false)
+                    setButtonText('Login to Dashboard')
+                    alert('Please enter valid credentials')
+                }
                 break
             default:
                 break;

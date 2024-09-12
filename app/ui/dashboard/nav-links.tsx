@@ -26,9 +26,19 @@ const lecturer_links = [
   { name: 'My Account', href: '/lecturer/dashboard', icon: '/dashboard/user.png' },
 ];
 
+const admin_links = [
+  { name: 'Courses', href: '/admin/dashboard', icon: '/dashboard/home.png' },
+  {
+    name: 'Lecturers',
+    href: '/admin/dashboard/lecturers',
+    icon: '/dashboard/course.png',
+  },
+  { name: 'Students', href: '/admin/dashboard', icon: '/dashboard/user.png' },
+];
+
 export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {
   const pathname = usePathname();
-  const links = actor === 'student' ? student_links : lecturer_links;
+  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : admin_links;
   return (
     <>
       {links.map((link) => {
