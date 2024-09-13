@@ -3,17 +3,24 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
+
+
 const student_links = [
-  { name: 'Home', href: '/dashboard', icon: '/dashboard/home.png' },
+  { name: 'Home', 
+    href: '/dashboard', 
+    icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
     href: '/dashboard',
     icon: '/dashboard/course.png',
   },
-  { name: 'My Account', href: '/dashboard', icon: '/dashboard/user.png' },
+  { name: 'My Account', 
+    href: '/dashboard/student-profile',
+    icon: '/dashboard/user.png' },
 ];
 
 const lecturer_links = [
