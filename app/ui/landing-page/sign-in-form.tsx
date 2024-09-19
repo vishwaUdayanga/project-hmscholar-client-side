@@ -80,7 +80,7 @@ export default function SignInForm({type}: {type: string}) {
         <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
                 <label htmlFor="registration_number" className="block text-zinc-500 mb-1 text-sm sm:text-base">
-                    Registration number
+                    { type === 'student' ? 'Registration Number' : type === 'lecturer' ? 'Staff Email' : 'Admin ID' }
                 </label>
                 <Controller
                     name="registration_number"

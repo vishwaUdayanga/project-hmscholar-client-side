@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { validateLecturer, validateAdmin } from '../api/auth/authentication';
 
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const Wrapper: React.FC<P> = (props: P) => {
         const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
         const router = useRouter();
 
-        const checkTokenExpiration = () => {
+        const checkTokenExpiration = ({type}: {type: string}) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
@@ -16,12 +17,22 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
                     const exp = decodedToken.exp * 1000;
                     if (Date.now() >= exp) {
                         localStorage.removeItem('token');
-                        router.push('/lecturer/login');
+                        if (type == 'lecturer') {
+                            router.push('/lecturer/login');
+                        }
+                        if (type == 'admin') {
+                            router.push('/admin/login');
+                        }
                     }
                 } catch (error) {
                     console.error('Error decoding token:', error);
                     localStorage.removeItem('token');
-                    router.push('/lecturer/login');
+                    if (type == 'lecturer') {
+                        router.push('/lecturer/login');
+                    }
+                    if (type == 'admin') {
+                        router.push('/admin/login');
+                    }
                 }
             }
         };
@@ -34,10 +45,30 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
                 } else {
                     try {
                         const decodedToken = JSON.parse(atob(token.split('.')[1]));
-                        console.log('Decoded Token:', decodedToken);
                         const exp = decodedToken.exp * 1000;
-                        console.log('Token Expiry Time:', new Date(exp));
-                        console.log('Current Time:', new Date());
+                        const email = decodedToken.sub;
+                        const password = decodedToken.password;
+                        const type = decodedToken.type;
+
+                        if (type == 'lecturer') {
+                            const lecturer_response = await validateLecturer({ email, password });
+                            if (!lecturer_response.ok) {
+                                console.error('Failed to validate token:', lecturer_response.statusText);
+                                localStorage.removeItem('token');
+                                router.push('/lecturer/login');
+                                return;
+                            }
+                        }
+
+                        if (type == 'admin') {
+                            const admin_response = await validateAdmin({ email, password });
+                            if (!admin_response.ok) {
+                                console.error('Failed to validate token:', admin_response.statusText);
+                                localStorage.removeItem('token');
+                                router.push('/admin/login');
+                                return;
+                            }
+                        }
 
                         if (Date.now() < exp) {
                             setIsAuthenticated(true);
@@ -55,7 +86,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
             };
 
             verifyToken();
-            const interval = setInterval(checkTokenExpiration, 60000);
+            const interval = setInterval(() => checkTokenExpiration({ type: 'lecturer' }), 60000);
             return () => clearInterval(interval);
         }, [router]);
 

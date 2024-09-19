@@ -22,14 +22,28 @@ export const SignInSchemaLecturer = z.object({
 
 export const AddSectionSchema = z.object({
     title: z
-        .string({message: 'Title is required'})
-        .min(5, {message: 'Title must be at least 5 characters long'})
-        .max(20, {message: 'Title must be at most 20 characters long'}),
+        .string({ message: 'Title is required' })
+        .min(5, { message: 'Title must be at least 5 characters long' })
+        .max(20, { message: 'Title must be at most 20 characters long' }),
     description: z
-        .string({message: 'A description is required'})
-        .min(5, {message: 'Description must be at least 5 characters long'})
-        .max(20, {message: 'Description must be at most 20 characters long'}),
-})
+        .string({ message: 'A description is required' })
+        .min(5, { message: 'Description must be at least 5 characters long' })
+        .max(20, { message: 'Description must be at most 20 characters long' }),
+    files: z.array(z.object({
+        name: z.string({ message: 'File name is required' }).min(1),
+        file: z
+            .any()
+            .refine((fileList: FileList) => fileList.length > 0, { message: 'You must select a file' })
+            .refine((fileList: FileList) => {
+                const file = fileList[0];
+                return file ? file.size < 5000000 : false;
+            }, { message: 'File size should be less than 5MB' })
+            .refine((fileList: FileList) => {
+                const file = fileList[0];
+                return file ? ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type) : false;
+            }, { message: 'Only word documents and PDFs are allowed' }),
+    })).max(5, { message: 'You can only upload up to 5 files' }),
+});
 
 export const AddAnnouncementSchema = z.object({
     title: z

@@ -2,7 +2,7 @@
 
 import { AddSectionSchema } from "@/app/lib/zod-schema"
 import { z } from "zod"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { createSection } from "@/app/api/lecturer/create"
@@ -21,7 +21,13 @@ export default function AddSectionForm({course_id}: {course_id: string}) {
         defaultValues: {
             title: '',
             description: '',
+            files: [{ name: '', file: null }]
         }
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "files"
     });
     
     const onSubmit = async (data: FormValues) => {
@@ -29,8 +35,15 @@ export default function AddSectionForm({course_id}: {course_id: string}) {
         setButtonText('Saving section...')
 
         try {
-            const response = await createSection({section_name: data.title, section_description: data.description, course_id: course_id});
-            if (response.ok) {
+            const newFormData = new FormData();
+            newFormData.append('title', data.title);
+            newFormData.append('description', data.description);
+            data.files.forEach((fileData, index) => {
+                newFormData.append(`file_${index}`, fileData.file[0]);
+                newFormData.append(`file_name_${index}`, fileData.name);
+            });
+            const response = await createSection({ data: newFormData, courseId: course_id });
+            if (response) {
                 setIsLoading(false)
                 setButtonText('Save & Continue')
                 alert('Section added successfully')
@@ -132,6 +145,50 @@ export default function AddSectionForm({course_id}: {course_id: string}) {
                             )}
                         />
                     </div>
+                    {fields.map((field, index) => (
+                    <div key={field.id} className="mb-4">
+                        <label htmlFor={`file_${index}`} className="block mb-1 text-sm sm:text-base">File {index + 1}</label>
+                        <div className="flex gap-4">
+                            <Controller
+                                name={`files.${index}.file`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex items-center p-2 border border-zinc-200 rounded-md">
+                                        <input
+                                            type="file"
+                                            id={`file_${index}`}
+                                            className="ml-2 text-black flex-1 outline-none text-sm"
+                                            onChange={(e) => field.onChange(e.target.files)}
+                                            onBlur={field.onBlur}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <Controller
+                                name={`files.${index}.name`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex items-center p-2 border border-zinc-200 rounded-md">
+                                        <input
+                                            type="text"
+                                            placeholder="File name"
+                                            className="ml-2 text-black outline-none text-sm"
+                                            {...field}
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </div>
+                        {errors.files?.[index]?.file && <p className="text-red-600 text-sm">{(errors.files[index]?.file as FieldError)?.message || 'An error occurred'}</p>}
+                        {errors.files?.[index]?.name && <p className="text-red-600 text-sm">{errors.files[index]?.name?.message}</p>}
+                        <button type="button" onClick={() => remove(index)} className="text-sm px-4 py-1 bg-red-500 text-white rounded mt-3">Remove</button>
+                    </div>
+                    ))}
+
+                    {/* Add another file button */}
+                    {fields.length < 5 && (
+                        <button type="button" onClick={() => append({ name: '', file: null })} className="text-sm px-4 py-2 bg-slate-900 text-white rounded mt-3">Add another file</button>
+                    )}
                 </div>
             </div>
             <div className="border-t-2 border-zinc-100 pt-5 flex justify-between w-full mt-10">
