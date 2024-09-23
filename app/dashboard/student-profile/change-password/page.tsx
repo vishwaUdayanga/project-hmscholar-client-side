@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { updateStudentPassword } from '@/app/api/student/update'
-import getStudentProfile from '@/app/api/student/data';
+import {getStudentProfile} from '@/app/api/student/data';
 
 interface StudentProfile {
   email: string;
@@ -45,7 +45,7 @@ export default function UpdatePasswordForm() {
     const fetchProfile = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        router.push('/lecturer/login');
+        router.push('');
         return;
       }
       const decodedToken = JSON.parse(atob(token.split('.')[1]));

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import getStudentProfile from '@/app/api/student/data';
+import {getStudentProfile} from '@/app/api/student/data';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -20,7 +20,7 @@ export default function StudentProfile() {
     const getEmail = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        router.push('/lecturer/login');
+        router.push('');
         return;
       }
 

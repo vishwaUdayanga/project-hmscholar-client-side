@@ -15,7 +15,7 @@ const student_links = [
     icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
-    href: '/dashboard',
+    href: '/dashboard/course',
     icon: '/dashboard/course.png',
   },
   { name: 'My Account', 
