@@ -95,3 +95,38 @@ export async function createAnnouncement({ announcement_title, announcement_desc
         throw error;
     }
 }
+
+export async function createQuiz({
+        quiz_name,
+        quiz_duration,
+        quiz_total_marks,
+        quiz_description,
+        quiz_password,
+        quiz_number_of_questions,
+        questions, sectionId } : { quiz_name: string,
+            quiz_duration: number,
+            quiz_total_marks: number,
+            quiz_description: string, 
+            quiz_password: string, 
+            quiz_number_of_questions: number, 
+            questions: any[], 
+            sectionId: string | null }) {
+    try {
+        const section_id = sectionId || '';
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/create-quiz`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quiz_name, quiz_duration, quiz_total_marks, quiz_description, quiz_password, quiz_number_of_questions, questions, section_id })
+        });
+        if (response.status !== 200) {
+            throw new Error('Failed to create section');
+        }
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

@@ -102,3 +102,36 @@ export const AddStudentsSchema = z.object({
         .min(8, {message: 'Password must be at least 8 characters long'})
         .max(20, {message: 'Password must be at most 20 characters long'}),
 })
+
+export const AddQuizSchema = z.object({
+    quiz_name: z
+        .string({message: 'Quiz name is required'})
+        .min(5, {message: 'Quiz name must be at least 5 characters long'})
+        .max(20, {message: 'Quiz name must be at most 20 characters long'}),
+    quiz_duration: z
+        .string({message: 'Duration is required'})
+        .transform((val) => parseInt(val, 10))
+        .refine((val) => !isNaN(val) && val >= 1 && val <= 120, {
+            message: 'Duration must be between 1 and 120 minutes',
+        }),
+    quiz_total_marks: z
+        .string({message: 'Total mark is required'})
+        .transform((val) => parseInt(val, 10))
+        .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
+            message: 'Total mark must be between 1 and 100',
+        }),
+    quiz_description: z
+        .string({message: 'Description is required'})
+        .min(5, {message: 'Description must be at least 5 characters long'})
+        .max(20, {message: 'Description must be at most 20 characters long'}),
+    quiz_password: z
+        .string({message: 'Password is required'})
+        .min(8, {message: 'Password must be at least 8 characters long'})
+        .max(20, {message: 'Password must be at most 20 characters long'}),
+    quiz_number_of_questions: z
+        .string({ message: 'Number of questions is required' })
+        .transform((val) => parseInt(val, 10)) 
+        .refine((val) => !isNaN(val) && val >= 1 && val <= 50, {
+            message: 'Number of questions must be between 1 and 50',
+        }), 
+})

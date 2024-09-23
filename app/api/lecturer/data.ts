@@ -38,6 +38,16 @@ export async function getSections({ courseId }: { courseId: string }) {
     }
 }
 
+export async function getSectionForQuiz({ courseId }: { courseId: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/sections-for-quiz/${courseId}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
 export async function getSection({ sectionId }: { sectionId: string }) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/one-section/${sectionId}`);
