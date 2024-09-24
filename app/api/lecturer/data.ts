@@ -8,6 +8,16 @@ export async function getLecturer({ email }: { email: string}) {
     }
 }
 
+export async function getLecturerDetails({ email }: { email: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/lecturer/by-email/details/${email}`);
+        return response.json();
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
 export async function getLecturerCourses({ lecturerId }: { lecturerId: string }) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/lecturer/${lecturerId}/courses`);

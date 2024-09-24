@@ -135,3 +135,17 @@ export const AddQuizSchema = z.object({
             message: 'Number of questions must be between 1 and 50',
         }), 
 })
+
+export const EditProfilePictureSchema = z.object({
+    image: z
+        .any()
+        .refine((fileList: FileList) => fileList.length > 0, { message: 'You must select a file' })
+        .refine((fileList: FileList) => {
+            const file = fileList[0];
+            return file ? file.size < 5000000 : false;
+        }, { message: 'File size should be less than 5MB' })
+        .refine((fileList: FileList) => {
+            const file = fileList[0];
+            return file ? ['image/jpeg', 'image/png'].includes(file.type) : false;
+        }, { message: 'Only JPEG and PNG images are allowed' }),
+})

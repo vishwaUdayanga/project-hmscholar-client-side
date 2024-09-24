@@ -30,7 +30,7 @@ const lecturer_links = [
     href: '/lecturer/dashboard',
     icon: '/dashboard/course.png',
   },
-  { name: 'My Account', href: '/lecturer/dashboard', icon: '/dashboard/user.png' },
+  { name: 'My Account', href: '/lecturer/dashboard/my-account', icon: '/dashboard/user.png' },
 ];
 
 const admin_links = [
