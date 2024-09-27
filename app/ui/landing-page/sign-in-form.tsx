@@ -3,87 +3,96 @@
 import { useForm, Controller} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { SignInSchema, SignInSchemaLecturer } from '@/app/lib/zod-schema'
+import { SignInSchema } from '@/app/lib/zod-schema'
 import { useState, useEffect } from 'react'
 import { redirect } from 'next/dist/server/api-utils'
-import { loginLecturer, loginAdmin, loginStudent } from '@/app/api/auth/authentication'
+import { loginToLms, loginToPortal } from '@/app/api/auth/authentication'
 import { useRouter } from 'next/navigation';
 
 
 type FormValues = z.infer<typeof SignInSchema>;
-type FormValuesLecturer = z.infer<typeof SignInSchemaLecturer>;
 
-export default function SignInForm({type}: {type: string}) {
+export default function SignInForm() {
     const router = useRouter()
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [buttonText, setButtonText] = useState("Login to Dashboard")
-
-    const schema = type === 'student' ? SignInSchema : SignInSchemaLecturer;
+    const [loginTo, setLoginTo] = useState('')
+    const [isLoadingLms, setIsLoadingLms] = useState(false)
+    const [isLoadingPortal, setIsLoadingPortal] = useState(false)
+    const [buttonTextLms, setButtonTextLms] = useState("Login to Dashboard")
+    const [buttonTextPortal, setButtonTextPortal] = useState("Go to Portal")
 
     const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(SignInSchema),
         mode: 'onTouched',
         defaultValues: {
-            registration_number: '',
+            user_name: '',
             password: '',
         }
     });
 
     
-    const onSubmit = async (data: FormValues | FormValuesLecturer) => {
-        setIsLoading(true)
-        setButtonText('Loading...')
-        switch (type) {
-            case 'lecturer':
-                // handleLecturerLogin
-                const response = await loginLecturer({email: data.registration_number.toString(), password: data.password.toString()})
-                const response_data = await response.json()
-                if (response.ok) {
-                    localStorage.setItem('token', response_data.access_token);
-                    router.push('/lecturer/dashboard')
-                } else {
-                    setIsLoading(false)
-                    setButtonText('Login to Dashboard')
-                    alert('Please enter valid credentials')
-                }
-                break;
-            case 'student':
-                const response_student= await loginStudent({email: data.registration_number.toString(), password: data.password.toString()})
-                const response_data_student = await response_student.json()
-                if (response_student.ok) {
-                    localStorage.setItem('token', response_data_student.access_token);
+    const onSubmit = async (data: FormValues) => {
+        console.log(loginTo)
+        if (loginTo === 'lms') {
+            setIsLoadingLms(true)
+            setButtonTextLms('Logging in...')
+            try {
+                const response = await loginToLms({ user_name: data.user_name, password: data.password })
+                const result = await response.json()
+                if (result.type == "student") {
+                    localStorage.setItem('token', result.access_token)
                     router.push('/dashboard')
-                } else {
-                    setIsLoading(false)
-                    setButtonText('Login to Dashboard')
-                    alert('Please enter valid credentials')
-                }
-                break;
-            case 'admin':
-                const response_admin = await loginAdmin({email: data.registration_number.toString(), password: data.password.toString()})
-                const response_data_admin = await response_admin.json()
-                if (response_admin.ok) {
-                    localStorage.setItem('token', response_data_admin.access_token);
+                } else if (result.type == "lecturer") {
+                    localStorage.setItem('token', result.access_token)
+                    router.push('/lecturer/dashboard')
+                } else if (result.type == "admin") {
+                    localStorage.setItem('token', result.access_token)
                     router.push('/admin/dashboard')
                 } else {
-                    setIsLoading(false)
-                    setButtonText('Login to Dashboard')
-                    alert('Please enter valid credentials')
+                    setButtonTextLms('Login to Dashboard')
+                    setIsLoadingLms(false)
+                    alert('Invalid credentials')
                 }
-                break
-            default:
-                break;
+                
+            } catch (error) {
+                setButtonTextLms('Login to Dashboard')
+                setIsLoadingLms(false)
+                alert('Invalid credentials')
+            }
+        } else {
+            setIsLoadingPortal(true)
+            setButtonTextPortal('Logging in...')
+            try {
+                const response = await loginToPortal({ user_name: data.user_name, password: data.password })
+                const result = await response.json()
+                if (result.type == "student") {
+                    localStorage.setItem('token', result.access_token)
+                    router.push('/portal/student')
+                } else if (result.type == "admin") {
+                    localStorage.setItem('token', result.access_token)
+                    router.push('/portal/admin/dashboard')
+                } else {
+                    setButtonTextPortal('Go to Portal')
+                    setIsLoadingPortal(false)
+                    alert('Invalid credentials')
+                }
+                
+            } catch (error) {
+                setButtonTextPortal('Go to Portal')
+                setIsLoadingPortal(false)
+                alert('Invalid credentials')
+            }
         }
-    };
+        
+    }
     return (
         <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
-                <label htmlFor="registration_number" className="block text-zinc-500 mb-1 text-sm sm:text-base">
-                    { type === 'student' ? 'Registration Number' : type === 'lecturer' ? 'Staff Email' : 'Admin ID' }
+                <label htmlFor="user_name" className="block text-zinc-500 mb-1 text-sm sm:text-base">
+                    User name
                 </label>
                 <Controller
-                    name="registration_number"
+                    name="user_name"
                     control={control}
                     render={({ field }) => (
                         <>
@@ -94,19 +103,19 @@ export default function SignInForm({type}: {type: string}) {
                                 </svg>
                                 <input
                                     type="text"
-                                    id="registration_number"
-                                    placeholder={type === 'student' ? 'Enter your registration number' : type === 'lecturer' ? 'Enter your staff email' : 'Enter your admin ID'}
+                                    id="user_name"
+                                    placeholder="Enter your user name"
                                     className="ml-2 text-black flex-1 outline-none text-sm sm:text-base"
                                     {...field}
                                 />
                             </div>
-                            {errors.registration_number &&
+                            {errors.user_name &&
                             <div className="flex gap-2 items-center mt-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CD3C16" className="bi bi-exclamation-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                     <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
                                 </svg>
-                                <p className="text-red-600 text-sm">{errors.registration_number.message}</p>
+                                <p className="text-red-600 text-sm">{errors.user_name.message}</p>
                             </div>
                             }
                         </>
@@ -150,10 +159,11 @@ export default function SignInForm({type}: {type: string}) {
             </div>
             <button
                 type="submit"
+                onClick={() => setLoginTo('lms')}
                 className="w-full bg-black text-white py-2 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50 flex items-center justify-center text-sm sm:text-base mt-5"
-                disabled={isLoading}
+                disabled={isLoadingLms}
             >
-                {buttonText}
+                {buttonTextLms}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
                         fillRule="evenodd"
@@ -165,9 +175,10 @@ export default function SignInForm({type}: {type: string}) {
             <p className='w-full text-center mt-4 text-sm text-zinc-500'>OR SIGN IN TO THE PORTAL</p>
             <button
                 type="submit"
+                onClick={() => setLoginTo('portal')}
                 className="w-full bg-sky-600 text-white py-2 rounded-md hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:ring-opacity-50 flex items-center justify-center text-sm sm:text-base mt-4"
             >
-                Go to Portal
+                {buttonTextPortal}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
                         fillRule="evenodd"
