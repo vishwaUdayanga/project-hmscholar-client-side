@@ -129,10 +129,10 @@ export default function Page({ params }: { params: { id: string } }) {
     };
 
     fetchCourses();
-  }, [id]); // Add `id` as a dependency for useEffect
+  }, [id]);
 
   if(loading) {
     return <p>Loading...</p>;
   }
-  return <>{component}</>; // Render the component dynamically based on state
+  return <>{component}</>; 
 }
