@@ -8,7 +8,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 <h1 className="text-xl">Lecturers</h1>
                 <div className="flex gap-3 flex-wrap">
                     <Link href={`/admin/dashboard/lecturers`} className="px-3 py-2 h-fit bg-blue-200 text-blue-600 rounded-md text-xs cursor-pointer">Lecturers</Link>
-                    <Link href={`/admin/dashboard/lecturers/add-lecturer`} className="px-3 py-2 h-fit bg-fuchsia-200 text-fuchsia-600 rounded-md text-xs cursor-pointer">Add lecturer</Link>
+                    <Link href={`/admin/dashboard/lecturers/add-lecturers`} className="px-3 py-2 h-fit bg-fuchsia-200 text-fuchsia-600 rounded-md text-xs cursor-pointer">Add lecturer</Link>
                 </div>
             </div>
             {children}

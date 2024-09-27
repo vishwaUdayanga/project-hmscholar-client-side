@@ -74,7 +74,7 @@ export default function Courses() {
     }, []);
 
     if (loading) return <CoursesSkeleton />;
-    if (error) return <p>Error: {error}</p>;
+    if (error) return <p>No courses to show...</p>;
 
     return (
         <div className="flex flex-col gap-6 w-full lg:flex-row lg:gap-16">
