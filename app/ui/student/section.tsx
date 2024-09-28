@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { getSections } from "@/app/api/lecturer/data";
-import Link from "next/link";
 import { deleteSection } from "@/app/api/lecturer/delete";
 
 type Section = {

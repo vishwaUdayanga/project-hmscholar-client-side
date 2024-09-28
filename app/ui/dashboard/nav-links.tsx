@@ -70,7 +70,7 @@ export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: s
             )}>{link.name}</p>
           </Link>
         );
-      })}
+      })} 
     </>
   );
 }
