@@ -2,7 +2,7 @@
 
 import { AddSectionSchema } from "@/app/lib/zod-schema"
 import { z } from "zod"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, useFieldArray, FieldError } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { getSection } from "@/app/api/lecturer/data"
@@ -57,16 +57,30 @@ export default function EditSectionForm({section_id}: {section_id: string}) {
         defaultValues: {
             title: '',
             description: '',
+            files: [{ name: '', file: null }]
         }
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "files"
     });
     
     const onSubmit = async (data: FormValues) => {
+        console.log(data)
         setIsLoading(true)
         setButtonText('Saving section...')
 
         try {
-            const response = await updateSection({ section_id: section_id, section_name: data.title, section_description: data.description });
-            if (response.ok) {
+            const newFormData = new FormData();
+            newFormData.append('title', data.title);
+            newFormData.append('description', data.description);
+            data.files.forEach((fileData, index) => {
+                newFormData.append(`file_${index}`, fileData.file[0]);
+                newFormData.append(`file_name_${index}`, fileData.name);
+            });
+            const response = await updateSection({ section_id: section_id, section_data: newFormData });
+            if (response) {
                 setIsLoading(false)
                 setButtonText('Save Changes')
                 alert('Section updated successfully')
@@ -93,8 +107,8 @@ export default function EditSectionForm({section_id}: {section_id: string}) {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-5 flex items-center justify-center flex-col p-4">
             <div className="w-full md:w-8/12">
-                <h1 className="text-xl font-semibold">Add a section</h1>
-                <p className="text-sm text-slate-500">Enter the details that needs to be appeared in a new section of this course.</p>
+                <h1 className="text-xl font-semibold">Edit section</h1>
+                <p className="text-sm text-slate-500">Edit the section details.</p>
                 
                 <div className="w-full mt-10">
                     <div className="mb-4">
@@ -170,11 +184,72 @@ export default function EditSectionForm({section_id}: {section_id: string}) {
                             )}
                         />
                     </div>
+                    {fields.map((field, index) => (
+                    <div key={field.id} className="mb-4">
+                        <label htmlFor={`file_${index}`} className="block mb-1 text-sm sm:text-base">File {index + 1}</label>
+                        <div className="flex gap-4">
+                            <Controller
+                                name={`files.${index}.file`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex items-center p-2 border border-zinc-200 rounded-md">
+                                        <input
+                                            type="file"
+                                            id={`file_${index}`}
+                                            className="ml-2 text-black flex-1 outline-none text-sm"
+                                            onChange={(e) => field.onChange(e.target.files)}
+                                            onBlur={field.onBlur}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <Controller
+                                name={`files.${index}.name`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex items-center p-2 border border-zinc-200 rounded-md">
+                                        <input
+                                            type="text"
+                                            placeholder="File name"
+                                            className="ml-2 text-black outline-none text-sm"
+                                            {...field}
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </div>
+                        {errors.files?.[index]?.file &&
+                            <div className="flex gap-2 items-center mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CD3C16" className="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg>                        
+                                <p className="text-red-600 text-sm">{(errors.files[index]?.file as FieldError)?.message || 'An error occurred'}</p>
+                            </div>
+                        }
+                        {errors.files?.[index]?.name &&
+                            <div className="flex gap-2 items-center mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CD3C16" className="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg> 
+                                <p className="text-red-600 text-sm">{errors.files[index]?.name?.message}</p>
+                            </div>
+                        }
+                        <button type="button" onClick={() => remove(index)} className="text-sm px-4 py-1 bg-red-500 text-white rounded mt-3">Remove</button>
+                    </div>
+                    ))}
                 </div>
             </div>
             <div className="border-t-2 border-zinc-100 pt-5 flex justify-between w-full mt-10">
                 <button className="px-5 py-2 h-fit border rounded-md border-zinc-200 font-bold text-sm" type="button" onClick={handleClear}>Clear</button>
-                <button type="submit" className="px-5 py-2 h-fit rounded-md border border-zinc-200 font-bold text-sm">{buttonText}</button>
+                <button 
+                    type="submit" 
+                    className="px-5 py-2 h-fit rounded-md border border-zinc-200 font-bold text-sm"
+                    disabled={isLoading}
+                    >
+                        {buttonText}
+                </button>
             </div>
         </form>
     )
