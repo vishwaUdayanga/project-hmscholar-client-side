@@ -14,8 +14,8 @@ interface QuestionData {
 
 interface QuizQuestionsProps {
     noOfQuestions: number;
-    onSubmit: (questions: QuestionData[]) => void;
-    isSubmitting: boolean;
+    onSubmit: (questions: QuestionData[]) => Promise<boolean>;
+    id: string;
 }
 
 interface QuestionFormData {
@@ -31,14 +31,23 @@ interface QuestionFormData {
     }[];
 }
 
-const QuizQuestions: React.FC<QuizQuestionsProps> = ({ noOfQuestions, onSubmit, isSubmitting }) => {
+const QuizQuestions: React.FC<QuizQuestionsProps> = ({ noOfQuestions, onSubmit, id }) => {
     const { register, handleSubmit, watch } = useForm<QuestionFormData>();
-    const [isSubmittingForm, setIsSubmittingForm] = useState<boolean>(isSubmitting);
+    const [isSubmittingForm, setIsSubmittingForm] = useState<boolean>(false);
 
     const questionsArray = Array.from({ length: noOfQuestions });
 
-    const onSubmitForm: SubmitHandler<QuestionFormData> = (data) => {
-        onSubmit(data.questions);
+    const onSubmitForm: SubmitHandler<QuestionFormData> = async (data) => {
+        setIsSubmittingForm(true)
+        const isSuccessful = await onSubmit(data.questions);
+        if (isSuccessful) {
+            setIsSubmittingForm(false);
+            alert('Quiz created successfully');
+            window.location.href = `/lecturer/dashboard/view-course/${id}`;
+        } else {
+            setIsSubmittingForm(false);
+            alert('An error occurred. Please try again');
+        }
     };
 
     return (
@@ -102,7 +111,7 @@ const QuizQuestions: React.FC<QuizQuestionsProps> = ({ noOfQuestions, onSubmit, 
                         </div>
                     ))}
                 </div>
-                <button disabled={isSubmitting} className='bg-blue-600 text-white px-5 py-1 mt-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 text-sm sm:text-base' type="submit">{ isSubmittingForm ? `Submitting...` : `Submit` }</button>
+                <button disabled={isSubmittingForm} className='bg-blue-600 text-white px-5 py-1 mt-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 text-sm sm:text-base' type="submit">{ isSubmittingForm ? `Submitting...` : `Submit` }</button>
             </div>
         </form>
     );

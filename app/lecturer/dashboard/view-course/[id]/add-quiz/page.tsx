@@ -32,7 +32,6 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
     const {id} = params;
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [sectionId, setSectionId] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [quizData, setQuizData] = useState<QuizData>({
         quiz_name: '',
         quiz_duration: 0,
@@ -61,7 +60,6 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
     };
 
     const handleQuestionsSubmit = async (questions: QuestionData[]) => {
-        setIsSubmitting(true);
         try {
             const completeQuizData = {
                 ...quizData,
@@ -70,16 +68,12 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
             };
             const response = await createQuiz(completeQuizData);
             if (response) {
-                alert('Quiz created successfully')
-                window.location.href = `/lecturer/dashboard/view-course/${id}`
+                return true
             } else {
-                alert('Error occurred while creating the quiz')
+                return false
             }
         } catch (error) {
-            console.error('Error occurred:', error);
-            throw error;
-        } finally {
-            setIsSubmitting(false);
+            return false
         }
         
     };
@@ -88,8 +82,14 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
         <div>
             <div className='flex gap-3 items-center flex-wrap pb-4'>
                 <div className='flex gap-2 items-center cursor-pointer' onClick={() => handleCurrentStep(1)} >
-                    <div className='w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center'>
-                        <p className='text-sm text-white'>1</p>
+                    <div className={clsx(
+                        'w-6 h-6 rounded-full flex items-center justify-center border border-gray-400',
+                        currentStep >= 1 ? 'bg-blue-600' : 'bg-white'
+                    )}>
+                        <p className={clsx(
+                            'text-sm',
+                            currentStep >= 1 ? 'text-white' : 'text-gray-400'
+                        )}>1</p>
                     </div>
                     <p className='text-sm'>Section</p>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#7A7A7B" className="bi bi-arrow-right-short" viewBox="0 0 16 16">
@@ -97,8 +97,14 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
                     </svg>
                 </div>
                 <div className='flex gap-2 items-center cursor-pointer' onClick={() => handleCurrentStep(2)} >
-                    <div className='w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center'>
-                        <p className='text-sm text-white'>2</p>
+                    <div className={clsx(
+                        'w-6 h-6 rounded-full flex items-center justify-center border border-gray-400',
+                        currentStep >= 2 ? 'bg-blue-600' : 'bg-white'
+                    )}>
+                        <p className={clsx(
+                            'text-sm',
+                            currentStep >= 2 ? 'text-white' : 'text-gray-400'
+                        )}>2</p>
                     </div>
                     <p className='text-sm'>Information</p>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#7A7A7B" className="bi bi-arrow-right-short" viewBox="0 0 16 16">
@@ -106,8 +112,14 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
                     </svg>
                 </div>
                 <div className='flex gap-2 items-center cursor-pointer' onClick={() => handleCurrentStep(3)} >
-                    <div className='w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center'>
-                        <p className='text-sm text-white'>3</p>
+                    <div className={clsx(
+                        'w-6 h-6 rounded-full flex items-center justify-center border border-gray-400',
+                        currentStep >= 3 ? 'bg-blue-600' : 'bg-white'
+                    )}>
+                        <p className={clsx(
+                            'text-sm',
+                            currentStep >= 3 ? 'text-white' : 'text-gray-400'
+                        )}>3</p>
                     </div>
                     <p className='text-sm'>Questions</p>
                 </div>
@@ -127,7 +139,7 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
                 <QuizQuestions
                     noOfQuestions={quizData.quiz_number_of_questions}
                     onSubmit={handleQuestionsSubmit}
-                    isSubmitting={isSubmitting}
+                    id={id}
                 />
             )}
         </div>
