@@ -10,7 +10,7 @@ type StudentProfile = {
     student_image: string;
   };
 
-export default function(){
+export default function Profile(){
     const [studentData, setStudentData] = useState<StudentProfile | null>(null);
     const [error,setError] = useState<string>();
     const [loading,setLoading] = useState<boolean>(true)

@@ -60,3 +60,22 @@ export  async function getSemesterCourse({course_id,student_id }: {course_id:str
     }
 } 
 
+export  async function getAllEnrolledCourses({student_id }: {student_id:string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student/all-enrolled-courses/${student_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+} 
+
+export  async function getAdminAnnoucements() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student/admin-announcements`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+} 

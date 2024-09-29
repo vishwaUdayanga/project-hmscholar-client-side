@@ -1,5 +1,5 @@
 import Search from "@/app/ui/dashboard/search"
-import Courses from "@/app/ui/dashboard/courses"
+import Courses from "@/app/ui/student/course";
 import Announcements from "@/app/ui/dashboard/announcements"
 import React, { Suspense } from 'react';
 import Image from 'next/image';

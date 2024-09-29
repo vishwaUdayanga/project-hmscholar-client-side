@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import Image from 'next/image';
+import React from 'react'
 import { useEffect, useState } from 'react';
 
 // Map of links to display in the side navigation.
