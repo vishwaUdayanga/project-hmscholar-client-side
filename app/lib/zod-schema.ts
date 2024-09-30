@@ -65,7 +65,7 @@ export const AddAdminAnnouncementSchema = z.object({
     description: z
         .string({message: 'A description is required'})
         .min(5, {message: 'Description must be at least 5 characters long'})
-        .max(20, {message: 'Description must be at most 20 characters long'}),
+        .max(50, {message: 'Description must be at most 20 characters long'}),
 })
 
 export const AddLecturersSchema = z.object({

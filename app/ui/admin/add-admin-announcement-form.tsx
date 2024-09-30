@@ -6,6 +6,8 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { createAdminAnnouncement } from "@/app/api/admin/create"
+import React from "react"
+import { getAdmin } from "@/app/api/admin/data"
 
 type FormValues = z.infer<typeof AddAdminAnnouncementSchema>
 
@@ -14,6 +16,7 @@ export default function AddAdminAnnouncementForm() {
 
     const [isLoading, setIsLoading] = useState(false)
     const [buttonText, setButtonText] = useState("Save & Continue")
+    const [adminId, setAdminId] = useState('')
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
         resolver: zodResolver(AddAdminAnnouncementSchema),
@@ -29,7 +32,7 @@ export default function AddAdminAnnouncementForm() {
         setButtonText('Saving Announcement...')
 
         try {
-            const response = await createAdminAnnouncement({ title: data.title, description: data.description })
+            const response = await createAdminAnnouncement({ title: data.title, description: data.description, admin_id: adminId });
             if (response.ok) {
                 setIsLoading(false)
                 setButtonText('Save & Continue')
@@ -38,7 +41,7 @@ export default function AddAdminAnnouncementForm() {
             } else {
                 setIsLoading(false)
                 setButtonText('Save & Continue')
-                alert('Error occurred while adding annnouncement')
+                alert('Error occurred while adding announcement')
             }
         } catch (error) {
             console.error('Error occurred:', error);
@@ -51,6 +54,35 @@ export default function AddAdminAnnouncementForm() {
     const handleClear = () => {
         reset();
     }
+
+    useEffect(() => {
+        const fetchAdmin = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                const email = decodedToken.sub;
+
+                const adminResponse = await getAdmin({ email });
+                if (!adminResponse.ok) {
+                    alert('Failed to fetch admin');
+                    return;
+                }
+                
+                const adminId = await adminResponse.json();
+                setAdminId(adminId);
+            } catch (error) {
+                console.error('Error fetching admin:', error);
+                alert('Failed to fetch admin');
+            }
+        };
+
+        fetchAdmin();
+    }, []);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-5 flex items-center justify-center flex-col">

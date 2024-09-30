@@ -57,3 +57,13 @@ export async function getStudent({ studentId }: { studentId: string }) {
         throw error;
     }
 }
+
+export async function getAdmin({ email }: { email: string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/by-email/${email}`)
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
