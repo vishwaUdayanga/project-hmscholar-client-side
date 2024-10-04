@@ -42,3 +42,19 @@ export async function deleteStudent({ studentId }: { studentId: string }) {
         throw error;
     }
 }
+
+//delete admin announcements
+export async function deleteAdminAnnouncement({ announcementId }: { announcementId: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/delete_announcement/${announcementId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

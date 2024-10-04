@@ -43,3 +43,18 @@ export async function updateStudent({ student_id ,email, password } : {student_i
         throw error;
     }
 }
+
+export async function updateAdminAnnouncement({ announcement_id, title, description} : { announcement_id: string, title: string, description: string}) {   try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/edit_announcement/${announcement_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title, description })
+        });
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

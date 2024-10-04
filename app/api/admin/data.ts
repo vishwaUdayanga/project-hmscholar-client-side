@@ -67,3 +67,25 @@ export async function getAdmin({ email }: { email: string}) {
         throw error;
     }
 }
+
+//get admin anouncements
+export async function getAdminAnnouncements() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/announcements`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+//get admin anouncement by id
+export async function getAdminAnnouncement({ announcement_id }: { announcement_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/announcement/${announcement_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
