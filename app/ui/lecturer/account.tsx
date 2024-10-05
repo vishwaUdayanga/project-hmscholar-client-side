@@ -8,6 +8,7 @@ import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
 import { EditProfilePictureSchema } from "@/app/lib/zod-schema";
 import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 
 type FormValues = z.infer<typeof EditProfilePictureSchema>
 
