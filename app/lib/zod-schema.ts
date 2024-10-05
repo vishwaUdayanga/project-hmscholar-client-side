@@ -221,3 +221,35 @@ export const EditMaterialSchema = z.object({
             message: 'Only word documents and PDFs are allowed',
         }),
 })
+
+export const EditCourseSchema = z.object({
+    course_name: z
+        .string({ message: 'Course name is required' })
+        .min(5, { message: 'Course name must be at least 5 characters long' })
+        .max(20, { message: 'Course name must be at most 20 characters long' }),
+    enrollment_key: z
+        .string({ message: 'Enrollment is required' })
+        .min(5, { message: 'Enrollment must be at least 5 characters long' })
+        .max(20, { message: 'Enrollment must be at most 20 characters long' }),
+    course_description: z
+        .string({ message: 'Description is required' })
+        .min(5, { message: 'Description must be at least 5 characters long' })
+        .max(20, { message: 'Description must be at most 20 characters long' }),
+    course_image: z
+        .any()
+        .optional() 
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['image/jpeg', 'image/png'].includes(file.type);
+        }, {
+            message: 'Only JPEG and PNG images are allowed',
+        }),
+})

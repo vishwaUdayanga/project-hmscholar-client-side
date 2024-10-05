@@ -107,3 +107,13 @@ export async function getQuiz({ quiz_id }: { quiz_id: string }) {
         throw error;
     }
 }
+
+export async function getCourseSettings({ course_id }: { course_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/course/settings/${course_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

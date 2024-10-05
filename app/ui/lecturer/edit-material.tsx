@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { getMaterial } from "@/app/api/lecturer/data"
 import { updateMaterial } from "@/app/api/lecturer/update"
 import { deleteMaterial } from "@/app/api/lecturer/delete"
+import React from "react"
 
 
 type FormValues = z.infer<typeof EditMaterialSchema>

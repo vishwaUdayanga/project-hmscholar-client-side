@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSections } from "@/app/api/lecturer/data";
 import Link from "next/link";
-import { deleteSection } from "@/app/api/lecturer/delete";
+import { deleteSection, deleteQuiz } from "@/app/api/lecturer/delete";
 
 type Material = {
     material_id: string;
@@ -28,6 +28,12 @@ export default function Sections({course_id} : {course_id: string}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [sections, setSections] = useState<Section[]>([]);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [sectionId, setSectionId] = useState<string | null>(null);
+
+    const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false);
+    const [quizId, setQuizId] = useState<string | null>(null);
     useEffect(() => {
         const fetchSections = async () => {
             try {
@@ -49,18 +55,32 @@ export default function Sections({course_id} : {course_id: string}) {
         fetchSections();
     }, []);
 
-    const handleDelete = async (section_id: string) => {
+    const handleDelete = async (section_id: string | null) => {
         try {
             const response = await deleteSection({ section_id });
-            if (!response.ok) {
+            if (!response) {
                 throw new Error('Failed to delete section');
             }
+            alert("Section deleted successfully")
             setSections(sections.filter(section => section.section_id !== section_id));
         } catch (error) {
             console.error('Error deleting section:', error);
             setError('Error deleting section');
         }
     };
+
+    const handleDeleteQuiz = async (quiz_id: string | null) => {
+        try {
+            const response = await deleteQuiz({ quiz_id });
+            if (!response) {
+                throw new Error('Failed to delete quiz');
+            }
+            alert("Quiz deleted successfully")
+        } catch (error) {
+            console.error('Error deleting quiz:', error);
+            setError('Error deleting quiz');
+        }
+    }
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -105,6 +125,19 @@ export default function Sections({course_id} : {course_id: string}) {
                                                 <Link href={`/lecturer/dashboard/edit-quiz/${quiz.quiz_id}`} className="text-sm">
                                                     {quiz.quiz_name}
                                                 </Link>
+                                                <button 
+                                                    onClick={() => {
+                                                            setShowDeleteQuizModal(true);
+                                                            setQuizId(quiz.quiz_id);
+                                                        }
+                                                    }
+                                                    className="text-red-600"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                                    </svg>
+                                                </button>
                                             </li>
                                         ))}
                                     </ul>
@@ -119,7 +152,11 @@ export default function Sections({course_id} : {course_id: string}) {
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(section.section_id)} 
+                                onClick={() => {
+                                        setShowDeleteModal(true);
+                                        setSectionId(section.section_id);
+                                    }
+                                }
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
@@ -131,6 +168,34 @@ export default function Sections({course_id} : {course_id: string}) {
                     </div>
                 )
             })}
+            { showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-lg">
+                        <p>Are you sure you want to delete this section?</p>
+                        <div className="flex gap-4 mt-4">
+                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                            <button onClick={() => {
+                                handleDelete(sectionId);
+                                setShowDeleteModal(false);
+                            }} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            { showDeleteQuizModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-lg">
+                        <p>Are you sure you want to delete this quiz?</p>
+                        <div className="flex gap-4 mt-4">
+                            <button onClick={() => setShowDeleteQuizModal(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                            <button onClick={() => {
+                                handleDeleteQuiz(quizId);
+                                setShowDeleteQuizModal(false);
+                            }} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

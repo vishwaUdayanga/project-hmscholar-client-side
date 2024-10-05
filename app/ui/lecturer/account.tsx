@@ -9,6 +9,7 @@ import { EditProfilePictureSchema, EditProfileSchema } from "@/app/lib/zod-schem
 import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateLecturerImage, updateLecturer } from "@/app/api/lecturer/update";
+import React from "react";
 
 type FormValues = z.infer<typeof EditProfilePictureSchema>
 type EditFormValues = z.infer<typeof EditProfileSchema>

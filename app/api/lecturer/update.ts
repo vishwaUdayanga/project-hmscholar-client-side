@@ -5,10 +5,12 @@ import { BlobServiceClient } from "@azure/storage-blob";
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING || '';
 const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_NAME || '';
 const AZURE_STORAGE_LECTURER_PICTURE_NAME = process.env.AZURE_STORAGE_LECTURER_PICTURE_NAME || '';
+const AZURE_STORAGE_COURSE_SETTINGS = process.env.AZURE_STORAGE_COURSE_SETTINGS || ''
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
 const containerClientProfilePictures = blobServiceClient.getContainerClient(AZURE_STORAGE_LECTURER_PICTURE_NAME);
+const containerClientCourseSettings = blobServiceClient.getContainerClient(AZURE_STORAGE_COURSE_SETTINGS);
 
 export async function updateSection({ section_id, section_data, } : { section_id: string, section_data: FormData }) {
     try {
@@ -242,6 +244,63 @@ export async function updateLecturer({lecturer_id, lecturer_data} : {lecturer_id
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ lecturer_name, lecturer_nic, lecturer_phone, lecturer_email })
+        });
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function updateCourseLecturer({course_id, data} : {course_id: string, data: FormData}) {
+    try {
+        const course_name = data.get('course_name');
+        const enrollment_key = data.get('enrollment_key');
+        const course_description = data.get('course_description');
+
+        const file: File | null = data.get('file') as unknown as File;
+
+        let course_image = data.get('course_image') as string | undefined;
+        
+        if (file) {
+            try {
+                if (course_image) {
+                    try {
+                        const existingFilename = course_image?.split('/').pop();
+                        if (existingFilename) {
+                            const blockBlobClient = containerClientCourseSettings.getBlockBlobClient(existingFilename);
+                            await blockBlobClient.delete();
+                        }
+                    } catch (error) {
+                        console.error('Error deleting old file:', error);
+                        throw error;
+                    }
+                }
+
+                const fileExtension = file.name.split('.').pop();
+                const newFilename = `${course_id}-${Date.now()}.${fileExtension}`;
+                const blockBlobClient = containerClientCourseSettings.getBlockBlobClient(newFilename);
+
+                const arrayBuffer = await file.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+
+                await blockBlobClient.uploadData(buffer);
+
+                const fileUrl = blockBlobClient.url;
+                course_image = fileUrl;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                throw error;
+            }
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/edit-course/${course_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ course_name, enrollment_key, course_description, course_image })
         });
         const result = await response.json();
         return result;

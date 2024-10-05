@@ -8,7 +8,7 @@ const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_NAME ||
 const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
 
-export async function deleteSection({ section_id } : { section_id: string }) {
+export async function deleteSection({ section_id } : { section_id: string | null }) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/delete-section/${section_id}`, {
             method: 'DELETE',
@@ -16,7 +16,22 @@ export async function deleteSection({ section_id } : { section_id: string }) {
                 'Content-Type': 'application/json'
             }
         });
-        return response;
+        return response.json();
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function deleteQuiz({ quiz_id } : { quiz_id: string | null }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/delete-quiz/${quiz_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.json();
     } catch (error) {
         console.error('Error occurred:', error);
         throw error;

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { getSection } from "@/app/api/lecturer/data"
 import { updateSection } from "@/app/api/lecturer/update"
+import React from "react"
 
 
 type FormValues = z.infer<typeof AddSectionSchema>
