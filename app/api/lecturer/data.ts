@@ -87,3 +87,33 @@ export async function getAnnouncement({ announcementId }: { announcementId: stri
         throw error;
     }
 }
+
+export async function getMaterial({ material_id }: { material_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-material/${material_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getQuiz({ quiz_id }: { quiz_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-quiz/${quiz_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getCourseSettings({ course_id }: { course_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/course/settings/${course_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

@@ -1,20 +1,24 @@
 'use client'
 
-import { useState } from 'react';
-import QuizInfo from '@/app/ui/lecturer/quiz/quiz-info';
-import SelectSection from '@/app/ui/lecturer/quiz/select-section';
-import QuizQuestions from '@/app/ui/lecturer/quiz/quiz-questions';
-import { createQuiz } from '@/app/api/lecturer/create';
-import clsx from 'clsx';
+import { useEffect, useState } from "react";
+import { getQuiz } from "@/app/api/lecturer/data";
+import { updateQuiz } from "@/app/api/lecturer/update";
+import clsx from "clsx";
+import QuizInfo from "@/app/ui/lecturer/quiz/quiz-info";
+import SelectSection from "@/app/ui/lecturer/quiz/select-section";
+import QuizQuestions from "@/app/ui/lecturer/quiz/quiz-questions";
 
 
 interface QuizData {
+    quiz_id: string;
+    course_id: string;
     quiz_name: string;
     quiz_duration: number;
     quiz_total_marks: number;
     quiz_description: string;
     quiz_password: string;
     quiz_number_of_questions: number;
+    section_id: string;
     questions: QuestionData[];
 }
 
@@ -22,26 +26,54 @@ interface QuestionData {
     questionText: string;
     questionMarks: number;
     questionType: 'written' | 'mcq';
-    answer1?: string;
     answer2?: string;
     answer3?: string;
     answer4?: string;
     correctAnswer?: string;
 }
 
-const CreateQuiz = ({params} : {params: {id: string}}) => {
-    const {id} = params;
+export default function EditQuiz({params} : {params : {id: string}}) {
+    const { id } = params;
     const [currentStep, setCurrentStep] = useState<number>(1);
-    const [sectionId, setSectionId] = useState<string | null>(null);
+    const [section_id, setSectionId] = useState<string>();
     const [quizData, setQuizData] = useState<QuizData>({
+        quiz_id: '',
+        course_id: '',
         quiz_name: '',
         quiz_duration: 0,
         quiz_total_marks: 0,
         quiz_description: '',
         quiz_password: '',
         quiz_number_of_questions: 0,
+        section_id: '',
         questions: [],
     });
+
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            try {
+                const response = await getQuiz({ quiz_id: id });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch quiz');
+                }
+                const quiz: QuizData = await response.json();
+                setQuizData(quiz);
+                setSectionId(quiz.section_id);
+            } catch (error) {
+                console.error('Error fetching quiz:', error);
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchQuiz();
+    }, [id]);
+
+    useEffect(() => {
+        console.log(quizData);
+    }
+    , [quizData]);
 
     const handleCurrentStep = (step: number) => {
         setCurrentStep(step);
@@ -52,7 +84,7 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
         setCurrentStep(2);
     };
 
-    const handleQuizSubmit = (quizInfo: Omit<QuizData, 'questions'>) => {
+    const handleQuizSubmit = (quizInfo: Partial<QuizData>) => {
         setQuizData({
             ...quizData,
             ...quizInfo,
@@ -64,13 +96,13 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
         try {
             const completeQuizData = {
                 ...quizData,
-                sectionId,
+                section_id,
                 questions,
             };
-            const response = await createQuiz(completeQuizData);
+            const response = await updateQuiz(completeQuizData);
             if (response) {
-                alert("Quiz created successfully")
-                window.location.href = `/lecturer/dashboard/view-course/${id}`
+                alert("Quiz was edited successfully!")
+                window.location.href = `/lecturer/dashboard/view-course/${quizData.course_id}`;
                 return true
             } else {
                 return false
@@ -83,6 +115,7 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
 
     return (
         <div>
+            <p className="mt-2 p-4 font-semibold text-lg">Edit Quiz</p>
             <div className='flex gap-3 items-center flex-wrap pb-4'>
                 <div className='flex gap-2 items-center cursor-pointer' onClick={() => handleCurrentStep(1)} >
                     <div className={clsx(
@@ -127,31 +160,33 @@ const CreateQuiz = ({params} : {params: {id: string}}) => {
                     <p className='text-sm'>Questions</p>
                 </div>
             </div>
-            {currentStep === 1 && (
-                <SelectSection
-                    onSectionSelect={handleSectionSelect}
-                    currentSectionId={sectionId}
-                    courseId={id}
-                />
-            )}
-
-            {currentStep === 2 && (
-                <QuizInfo 
-                    onQuizSubmit={handleQuizSubmit}
-                    currentQuizData={quizData} 
-                />
-            )}
-
-            {currentStep === 3 && (
-                <QuizQuestions
-                    noOfQuestions={quizData.quiz_number_of_questions}
-                    onSubmit={handleQuestionsSubmit}
-                    id={id}
-                    currentQuestions={quizData.questions}
-                />
+            {loading ? (
+                <p>Loading quiz data...</p>
+            ) : (
+                <>
+                    {currentStep === 1 && (
+                        <SelectSection
+                            onSectionSelect={handleSectionSelect}
+                            currentSectionId={quizData.section_id}
+                            courseId={quizData.course_id}
+                        />
+                    )}
+                    {currentStep === 2 && (
+                        <QuizInfo
+                            onQuizSubmit={handleQuizSubmit}
+                            currentQuizData={quizData}
+                        />
+                    )}
+                    {currentStep === 3 && (
+                        <QuizQuestions
+                            noOfQuestions={quizData.quiz_number_of_questions}
+                            onSubmit={handleQuestionsSubmit}
+                            id={id}
+                            currentQuestions={quizData.questions}
+                        />
+                    )}
+                </>
             )}
         </div>
-    );
-};
-
-export default CreateQuiz;
+    )
+}

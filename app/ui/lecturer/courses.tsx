@@ -11,6 +11,7 @@ type Course = {
     course_name: string;
     year: number;
     enrollment_key: string;
+    course_image: string | null;
     semester: number;
     lecturer_name: string;
 };
@@ -90,7 +91,7 @@ export default function Courses() {
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
                                                     <Image
-                                                        src={'/dashboard/courses/1.jpg'}
+                                                        src={course.course_image ? `${course.course_image}?sp=r&st=2024-10-05T11:14:00Z&se=2024-10-10T19:14:00Z&spr=https&sv=2022-11-02&sr=c&sig=Rjy%2Fa3f9Rc83jftJ9IFakD7ei4k8X8Au7Iy%2BPVy9ClE%3D` : '/dashboard/courses/1.jpg'}
                                                         alt={course.course_name}
                                                         fill
                                                         style={{ objectFit: 'cover' }}

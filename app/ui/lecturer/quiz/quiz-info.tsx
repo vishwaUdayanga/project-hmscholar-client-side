@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AddQuizSchema } from '@/app/lib/zod-schema';
+import { useState, useEffect } from 'react';
 
 interface QuizData {
     quiz_name: string;
@@ -25,16 +26,51 @@ interface QuestionData {
 
 interface QuizInfoProps {
     onQuizSubmit: (quizInfo: Omit<QuizData, 'questions'>) => void;
+    currentQuizData: QuizData;
 }
 
 type QuizInfoFormData = z.infer<typeof AddQuizSchema>;
 
-const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm<QuizInfoFormData>({
+const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit, currentQuizData }) => {
+    const [ currentQuizInfo, setCurrentQuizInfo ] = useState<QuizData>(currentQuizData)
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<QuizInfoFormData>({
         resolver: zodResolver(AddQuizSchema),
+        defaultValues: {
+            quiz_name: currentQuizData.quiz_name,
+            quiz_duration: currentQuizData.quiz_duration,
+            quiz_total_marks: currentQuizData.quiz_total_marks,
+            quiz_description: currentQuizData.quiz_description,
+            quiz_password: currentQuizData.quiz_password,
+            quiz_number_of_questions: currentQuizData.quiz_number_of_questions,
+        },
     });
 
+    useEffect(() => {
+        if (currentQuizData.quiz_name) {
+            setValue('quiz_name', currentQuizData.quiz_name);
+        }
+        if (currentQuizData.quiz_duration) {
+            setValue('quiz_duration', currentQuizData.quiz_duration);
+        }
+        if (currentQuizData.quiz_total_marks) {
+            setValue('quiz_total_marks', currentQuizData.quiz_total_marks);
+        }
+        if (currentQuizData.quiz_description) {
+            setValue('quiz_description', currentQuizData.quiz_description);
+        }
+        if (currentQuizData.quiz_password) {
+            setValue('quiz_password', currentQuizData.quiz_password);
+        }
+        if (currentQuizData.quiz_number_of_questions) {
+            setValue('quiz_number_of_questions', currentQuizData.quiz_number_of_questions);
+        }
+    }, [currentQuizData, setValue]);
+
     const onSubmit: SubmitHandler<QuizInfoFormData> = (data) => {
+        setCurrentQuizInfo({
+            ...currentQuizInfo,
+            ...data,
+        });
         onQuizSubmit(data);
     };
 
@@ -50,7 +86,11 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                             Quiz name
                         </label>
                         <div className="flex items-center p-2 border border-zinc-200 rounded-md">
-                            <input {...register('quiz_name')} placeholder="Quiz Name" className='ml-2 text-black flex-1 outline-none text-sm' />
+                            <input 
+                                {...register('quiz_name')} 
+                                placeholder="Quiz Name" 
+                                className='ml-2 text-black flex-1 outline-none text-sm'
+                            />
                         </div>
                         {errors.quiz_name &&
                             <div className="flex gap-2 items-center mt-2">
@@ -68,7 +108,12 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                             Duration
                         </label>
                         <div className="flex items-center p-2 border border-zinc-200 rounded-md">
-                            <input type="number" {...register('quiz_duration')} placeholder="Quiz duration" className='ml-2 text-black flex-1 outline-none text-sm' />
+                            <input 
+                                type="number" 
+                                {...register('quiz_duration', {valueAsNumber: true})} 
+                                placeholder="Quiz duration" 
+                                className='ml-2 text-black flex-1 outline-none text-sm'
+                            />
                         </div>
                         {errors.quiz_duration &&
                             <div className="flex gap-2 items-center mt-2">
@@ -86,7 +131,12 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                             Total mark
                         </label>
                         <div className="flex items-center p-2 border border-zinc-200 rounded-md">
-                            <input type="number" {...register('quiz_total_marks')} placeholder="Total Mark" className='ml-2 text-black flex-1 outline-none text-sm' />
+                            <input 
+                                type="number" 
+                                {...register('quiz_total_marks', {valueAsNumber: true})} 
+                                placeholder="Total Mark" 
+                                className='ml-2 text-black flex-1 outline-none text-sm' 
+                            />
                         </div>
                         {errors.quiz_total_marks &&
                             <div className="flex gap-2 items-center mt-2">
@@ -115,7 +165,11 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                                     <path d="M5.313 3.136h-1.23V9.54c0 2.105 1.47 3.623 3.917 3.623s3.917-1.518 3.917-3.623V3.136h-1.23v6.323c0 1.49-.978 2.57-2.687 2.57s-2.687-1.08-2.687-2.57zM12.5 15h-9v-1h9z"/>
                                 </svg>
                             </div>
-                            <textarea {...register('quiz_description')} placeholder="Description" className='text-black outline-none text-sm w-full p-2 rounded-md block h-48 resize-none' />
+                            <textarea 
+                                {...register('quiz_description')} 
+                                placeholder="Description" 
+                                className='text-black outline-none text-sm w-full p-2 rounded-md block h-48 resize-none'
+                            />
                         </div>
                     </div>
 
@@ -124,7 +178,12 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                             Quiz password
                         </label>
                         <div className="flex items-center p-2 border border-zinc-200 rounded-md">
-                            <input {...register('quiz_password')} type="password" placeholder="Quiz Password" className='ml-2 text-black flex-1 outline-none text-sm' />
+                            <input 
+                                {...register('quiz_password')} 
+                                type="password" 
+                                placeholder="Quiz Password" 
+                                className='ml-2 text-black flex-1 outline-none text-sm' 
+                            />
                         </div>
                         {errors.quiz_password &&
                             <div className="flex gap-2 items-center mt-2">
@@ -142,7 +201,12 @@ const QuizInfo: React.FC<QuizInfoProps> = ({ onQuizSubmit }) => {
                             Number of questions
                         </label>
                         <div className="flex items-center p-2 border border-zinc-200 rounded-md">
-                            <input type="number" {...register('quiz_number_of_questions')} placeholder="Number of Questions" className='ml-2 text-black flex-1 outline-none text-sm' />
+                            <input 
+                                type="number" 
+                                {...register('quiz_number_of_questions', {valueAsNumber: true})} 
+                                placeholder="Number of Questions" 
+                                className='ml-2 text-black flex-1 outline-none text-sm' 
+                            />
                         </div>
                         {errors.quiz_number_of_questions &&
                             <div className="flex gap-2 items-center mt-2">
