@@ -158,7 +158,7 @@ export const AddQuizEditSchema = z.object({
     quiz_description: z
         .string({message: 'Description is required'})
         .min(5, {message: 'Description must be at least 5 characters long'})
-        .max(20, {message: 'Description must be at most 20 characters long'}),
+        .max(200, {message: 'Description must be at most 20 characters long'}),
     quiz_password: z
         .string({message: 'Password is required'})
         .min(8, {message: 'Password must be at least 8 characters long'})

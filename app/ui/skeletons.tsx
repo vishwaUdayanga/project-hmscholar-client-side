@@ -24,6 +24,107 @@ export function CoursesSkeleton() {
     )
 }
 
+
+export function AnnouncementListSkeleton(){
+    return (
+        <div className="w-full">
+                <div className="w-full flex items-center justify-between border-b border-b-slate-300 py-3 cursor-pointer flex-wrap gap-5 animate-pulse">
+                    <div className="flex items-center gap-4">
+                        <div className="relative w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+                            {/* Skeleton circle for the profile image */}
+                        </div>
+                        <div>
+                            <div className="bg-gray-300 h-4 w-24 mb-2 rounded"></div>
+                            {/* Skeleton for admin name */}
+                        </div>
+                    </div>
+                    <div className="flex-1">
+                        <div className="bg-gray-300 h-4 w-2/3 mb-2 rounded"></div>
+                        <div className="bg-gray-300 h-3 w-full rounded"></div>
+                        {/* Skeleton for title and description */}
+                    </div>
+                    <div className="w-14">
+                        <div className="bg-gray-300 h-3 w-full rounded"></div>
+                        {/* Skeleton for the timestamp */}
+                    </div>
+                </div>
+        </div>);
+}
+
+export function CourseCardSkeleton() {
+    return (
+      <div className="card border border-slate-300 p-5 shadow-lg w-full md:w-72 h-60 flex flex-col justify-between animate-pulse">
+        <div className="card-image relative w-full h-40 rounded overflow-hidden bg-gray-300"></div>
+        <div className="card-details mt-2">
+          <div className="bg-gray-300 h-4 w-3/4 rounded mb-2"></div> {/* Course Name Placeholder */}
+          <div className="bg-gray-200 h-3 w-1/2 rounded"></div> {/* Lecturer Name Placeholder */}
+        </div>
+        <div className="card-footer text-left mt-2">
+          <div className="bg-gray-200 h-4 w-16 rounded"></div> {/* Credits Placeholder */}
+        </div>
+      </div>
+    );
+  }
+  
+export default function ProfileSkeleton()
+{
+    return(
+        <div className="w-full h-[80vh] mt-14 flex items-center justify-center gap-3 p-4 flex-col">
+            <div className="w-full p-4 border rounded-lg border-zinc-200 md:w-1/2 flex items-center gap-5 relative animate-pulse">
+                <div className="relative w-20 h-20 rounded-full bg-gray-300"></div>
+                    <div className="w-full">
+                        <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+                        </div>
+                    <div className="h-fit px-2 py-1 flex items-center justify-center gap-1 border rounded-md border-slate-300 absolute top-4 right-4 w-20">
+                <div className="h-4 bg-gray-300 rounded w-8"></div>
+             </div>
+        </div>
+
+        <div className="w-full p-4 border rounded-lg border-zinc-200 md:w-1/2 animate-pulse">
+            <div className="w-full flex justify-between">
+                <div className="h-4 bg-gray-300 rounded w-36 mb-6"></div>
+            </div>
+            <ul>
+                <li className="w-full flex gap-3 flex-wrap">
+                    <div className="h-4 bg-gray-300 rounded w-72 mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded w-40 mb-3"></div>
+                </li>
+                <li className="w-full flex gap-3 flex-wrap">
+                    <div className="h-4 bg-gray-300 rounded w-72 mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded w-40 mb-3"></div>
+                </li>
+                <li className="w-full flex gap-3 flex-wrap">
+                    <div className="h-4 bg-gray-300 rounded w-72 mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded w-40 mb-3"></div>
+                </li>
+                <li className="w-full flex gap-3 flex-wrap">
+                    <div className="h-4 bg-gray-300 rounded w-72 mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded w-40 mb-3"></div>
+                </li>
+                <li className="w-full flex flex-col gap-3">
+                    <div className="h-4 bg-gray-300 rounded w-36 mb-1"></div>
+                    <div className="flex flex-col gap-2">
+                        <div className="w-full mb-3">
+                            <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+                            <ul className="ml-5 list-disc">
+                                <li className="h-4 bg-gray-300 rounded w-36 mb-1"></li>
+                                <li className="h-4 bg-gray-300 rounded w-36 mb-1"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        <div className="w-full flex items-center justify-center gap-7 mt-10 p-4 flex-row">
+            <div className="h-fit px-2 py-1 bg-gray-300 rounded w-60"></div>
+            <div className="h-fit px-2 py-1 bg-gray-300 rounded w-60"></div>
+        </div>
+        </div>
+        </div>
+
+    )
+}
+
+
 export const AnnouncementSkeleton = () => {
     return (
         <div className="w-full">

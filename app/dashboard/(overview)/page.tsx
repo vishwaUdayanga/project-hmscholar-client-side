@@ -4,7 +4,7 @@ import Announcements from "@/app/ui/dashboard/announcements"
 import React, { Suspense } from 'react';
 import Image from 'next/image';
 
-import { CoursesSkeleton, AnnouncementSkeleton } from "@/app/ui/skeletons"
+import { CoursesSkeleton, AnnouncementListSkeleton } from "@/app/ui/skeletons"
 
 export default function Page() {
 
@@ -23,7 +23,7 @@ export default function Page() {
                 <p className="font-bold text-lg">Announcements</p>
                 <Image src="/dashboard/announcements/bell.svg" alt="Announcement" width={20} height={20} />
             </div>
-            <Suspense fallback={<AnnouncementSkeleton />}>
+            <Suspense fallback={<AnnouncementListSkeleton />}>
                 <Announcements />
             </Suspense>
         </div>

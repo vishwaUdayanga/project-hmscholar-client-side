@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getStudentProfile ,getEnrolledProgramCourse} from '@/app/api/student/data';
+import { updateStudentImage } from '@/app/api/student/update';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
@@ -9,6 +10,8 @@ import { set,z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from 'next/link';
 import React from "react";
+import ProfileSkeleton from '@/app/ui/skeletons';
+
 
 type FormValues = z.infer<typeof EditProfilePictureSchema>;
 
@@ -42,6 +45,7 @@ const groupCoursesBySemester = (courses: Course[]) => {
   }, {});
 };
 
+
 export default function StudentProfile() {
   const [error, setError] = useState<string | null>(null);
   const [studentData, setStudentData] = useState<StudentProfile | null>(null);
@@ -49,7 +53,8 @@ export default function StudentProfile() {
   const [loading, setLoading] = useState(true);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [groupedProgramCoursesPrev, setGroupedProgramCoursesPrev] = useState<GroupedCourses>({});
-  const router = useRouter();
+  const router = useRouter();0
+  const [ isUploadingDetails, setIsUploadingDetails ] = useState(false);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
     resolver: zodResolver(EditProfilePictureSchema),
@@ -60,21 +65,23 @@ export default function StudentProfile() {
   });
 
 
-  const onSubmit = async (data: FormValues) => {
-    setIsUploadingImage(true);
-    if (!data.image) return; 
+  // const onSubmit = async (data: FormValues) => {
+  //   setIsUploadingImage(true);
+  //   if (!data.image) return; 
 
-    try {
-      const formData = new FormData();
-      formData.append('image', data.image[0]);
-      // Implement your image upload logic here
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      setIsUploadingImage(false);
-      setShowModal(false);
-    }
-  };
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append('image', data.image[0]);
+  //     // Implement your image upload logic here
+  //   } catch (error) {
+  //     console.error('Error uploading image:', error);
+  //   } finally {
+  //     setIsUploadingImage(false);
+  //     setShowModal(false);
+  //   }
+  // };
+
+             
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -115,7 +122,28 @@ export default function StudentProfile() {
     fetchStudent();
   }, [router]);
 
-  if (loading) return <p>Loading...</p>;
+      const onSubmit = async (data: FormValues) => {
+        setIsUploadingImage(true);
+        try {
+            const image_data = new FormData();
+            image_data.append('file', data.image[0]);
+            image_data.append('file_path', studentData?.student_image || '');
+
+            const response = await updateStudentImage({ student_id: studentData?.student_id || '', image_data });
+            if (!response) {
+                throw new Error('Failed to update image');
+            }
+            setStudentData(response)
+            setShowModal(false);
+        } catch (error) {
+            console.error('Error updating image:', error);
+            setError('Error updating image');
+        } finally {
+            setIsUploadingImage(false);
+        }
+    }
+
+  if (loading) return <><ProfileSkeleton/></>;
   if (error) return <p>No details to show...</p>;
   return (
     <div className="w-full h-[80vh] mt-14 flex items-center justify-center gap-3 p-4 flex-col">
@@ -255,55 +283,3 @@ export default function StudentProfile() {
     </div>
   );
 }
-
-
-
-//         <div className="w-full h-[80vh] flex items-center justify-center gap-3 p-4 flex-col">
-//                     <p className="font-bold">{lecturer?.lecturer_name}</p>
-//                     <p className="mt-1 text-sm text-slate-600">{lecturer?.lecturer_email}</p>
-//                     <p className="mt-1 text-sm text-slate-600">{lecturer?.lecturer_phone}</p>
-//                 </div>
-//                 <div className="h-fit px-2 py-1 flex items-center justify-center gap-1 border rounded-md border-slate-300 cursor-pointer absolute top-4 right-4" onClick={() => setShowModal(true)}>
-//                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
-//                         <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
-//                     </svg>
-//                     <p className="text-sm text-slate-600">Edit</p>
-//                 </div>
-//             </div>
-//             <div className="w-full p-4 border rounded-lg border-zinc-200 md:w-1/2">
-//                 <div className="w-full flex justify-between">
-//                     <p className="font-bold mb-6">Personal details</p>
-//                     <div className="h-fit px-2 py-1 flex items-center justify-center gap-1 border rounded-md border-slate-300 cursor-pointer">
-//                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" className="bi bi-pen" viewBox="0 0 16 16">
-//                             <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
-//                         </svg>
-//                         <p className="text-sm text-slate-600">Edit</p>
-//                     </div>
-//                 </div>
-//                 <ul>
-//                     <li className="w-full flex gap-3 flex-wrap">
-//                         <p className="text-sm w-72 mb-3 text-slate-600">Name</p>
-//                         <p className="text-sm ml-3 text-slate-600">{lecturer?.lecturer_name}</p>
-//                     </li>
-//                     <li className="w-full flex gap-3 flex-wrap">
-//                         <p className="text-sm w-72 mb-3 text-slate-600">NIC</p>
-//                         <p className="text-sm ml-3 text-slate-600">{lecturer?.lecturer_nic}</p>
-//                     </li>
-//                     <li className="w-full flex gap-3 flex-wrap">
-//                         <p className="text-sm w-72 mb-3 text-slate-600">Phone</p>
-//                         <p className="text-sm ml-3 text-slate-600">{lecturer?.lecturer_phone}</p>
-//                     </li>
-//                     <li className="w-full flex gap-3 flex-wrap">
-//                         <p className="text-sm w-72 text-slate-600">Email</p>
-//                         <p className="text-sm ml-3 text-slate-600">{lecturer?.lecturer_email}</p>
-//                     </li>
-//                 </ul>
-//             </div>
-//             {showModal && (
-//                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//                     <div className="bg-white p-6 rounded-md w-96">
-//                         <h2 className="text-lg font-bold mb-4">Edit Profile Picture</h2>
-//                     </div>
-//                 </div>
-//             )}
-//         </div>

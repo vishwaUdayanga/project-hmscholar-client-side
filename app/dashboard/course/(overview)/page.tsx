@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getStudentCourse, getStudentProfile, getProgramCourse , getEnrolledProgramCourse} from '@/app/api/student/data';
-import { CoursesSkeleton } from '@/app/ui/skeletons';
+import { CourseCardSkeleton } from '@/app/ui/skeletons';
 import Search from '@/app/ui/dashboard/search';
 import { Suspense } from 'react';
 import CourseCard from '@/app/ui/student/courseCard';
@@ -88,8 +88,51 @@ export default function Courses() {
         fetchCourses();
     }, []);
 
-    if (loading) return <CoursesSkeleton />;
     if (error) return <p>Error: {error}</p>;
+    if (loading) return (
+        <div className="flex flex-col px-4">
+          <div className="flex gap-4 items-center flex-col lg:flex-row mb-5">
+            <Suspense fallback={<div>Loading...</div>}>
+              <Search placeholder="Search for courses" />
+            </Suspense>
+          </div>
+      
+          <p className="font-bold mb-3 mt-3">Courses in current semester</p>
+          <div className="w-full overflow-x-auto">
+            <div className="flex flex-wrap justify-start gap-4">
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+            </div>
+          </div>
+      
+          <p className="font-bold mb-3 mt-3">Enrolled courses in previous semesters</p>
+          <div className="w-full overflow-x-auto">
+            <div className="flex flex-wrap justify-start gap-4">
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+            </div>
+          </div>
+      
+          <p className="font-bold mb-3 mt-3">Courses in the Program</p>
+          <div className="w-full overflow-x-auto">
+            <div className="flex flex-wrap justify-start gap-4">
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+            </div>
+          </div>
+        </div>
+    );
+      
+      
 
     return (
             <div className="flex flex-col px-4">
