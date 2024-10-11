@@ -143,7 +143,7 @@ export default function Account() {
                         className='relative w-20 h-20 rounded-full overflow-hidden'
                     >
                         <Image
-                        src={(lecturer?.lecturer_image) ? `${lecturer?.lecturer_image}?sp=r&st=2024-09-28T21:44:46Z&se=2024-10-10T05:44:46Z&spr=https&sv=2022-11-02&sr=c&sig=OW4XAvKoGyoSRPZ7oVaj3ylp%2FpK22jVJypMOawi%2FZOM%3D` : '/dashboard/announcements/user.jpg'}
+                        src={(lecturer?.lecturer_image) ? `${lecturer?.lecturer_image}?sp=r&st=2024-10-11T17:00:35Z&se=2024-10-25T01:00:35Z&spr=https&sv=2022-11-02&sr=c&sig=ueOfKfZZEaYy7GmUNTwc08O4vMOJzkmqS%2BHSG4JFSQQ%3D` : '/dashboard/announcements/user.jpg'}
                         alt="Profile Picture"
                         fill
                         style={{ objectFit: 'cover' }}
