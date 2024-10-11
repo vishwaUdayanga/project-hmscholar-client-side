@@ -43,9 +43,24 @@ const admin_links = [
   { name: 'Students', href: '/admin/dashboard/students', icon: '/dashboard/user.png' },
 ];
 
+const nportal_links = [
+  { name: 'Program1', 
+    href: '/portal', 
+    icon: '/portal/programs/1.png' },
+  {
+    name: 'Program2',
+    href: '/portal',
+    icon: '/portal/programs/2.png',
+  },
+  { name: 'Program3', 
+    href: '/portal',
+    icon: '/portal/programs/3.png' },
+];
+
+
 export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {
   const pathname = usePathname();
-  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : admin_links;
+  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : actor === 'new_student' ? nportal_links : admin_links;
   return (
     <>
       {links.map((link) => {

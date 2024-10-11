@@ -64,3 +64,34 @@ export const AnnouncementSkeleton = () => {
         </div>
     );
 }
+
+type ProgramCardSkeletonProps = {
+    key?: string; // Optional key prop if you are mapping through a list
+};
+
+const ProgramCardSkeleton = ({ key }: ProgramCardSkeletonProps) => {
+    return (
+        <div className="flex items-center justify-center">
+            <div className="flex border rounded-lg shadow-md p-6 bg-white w-full max-w-4xl mt-4 mb-4 relative animate-pulse">
+                {/* University Image Skeleton */}
+                <div className="flex-shrink-0">
+                    <div className="w-32 h-32 bg-gray-300 rounded-lg mr-6"></div>
+                </div>
+
+                {/* Program Details Skeleton */}
+                <div className="flex flex-col justify-between flex-grow">
+                    <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded mb-3"></div>
+                </div>
+
+                {/* Button Skeleton */}
+                <div className="absolute bottom-6 right-6">
+                    <div className="w-24 h-10 bg-gray-300 rounded"></div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProgramCardSkeleton;
