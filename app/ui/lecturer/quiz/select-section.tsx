@@ -9,6 +9,7 @@ interface Section {
 
 interface SelectSectionProps {
     onSectionSelect: (selectedSectionId: string) => void,
+    currentSectionId: string | null;
     courseId: string;
 }
 
@@ -16,9 +17,14 @@ interface SectionFormData {
     section: string;
 }
 
-const SelectSection: React.FC<SelectSectionProps> = ({ onSectionSelect, courseId }) => {
+const SelectSection: React.FC<SelectSectionProps> = ({ onSectionSelect, courseId, currentSectionId }) => {
     const [sections, setSections] = useState<Section[]>([]);
-    const { register, handleSubmit } = useForm<SectionFormData>();
+    const [selectedSection, setSelectedSection] = useState<string | null>(currentSectionId);
+    const { register, handleSubmit, setValue } = useForm<SectionFormData>({
+        defaultValues: {
+            section: currentSectionId || '',
+        },
+    });
 
     useEffect(() => {
         const fetchSections = async () => {
@@ -34,9 +40,16 @@ const SelectSection: React.FC<SelectSectionProps> = ({ onSectionSelect, courseId
             }
         };
         fetchSections();
-    }, []);
+    }, [courseId]);
+
+    useEffect(() => {
+        if (currentSectionId) {
+            setValue('section', currentSectionId);
+        }
+    }, [currentSectionId, setValue]);
 
     const onSubmit: SubmitHandler<SectionFormData> = (data) => {
+        setSelectedSection(data.section);
         onSectionSelect(data.section);
     };
 
@@ -46,7 +59,15 @@ const SelectSection: React.FC<SelectSectionProps> = ({ onSectionSelect, courseId
                 <h1 className="text-xl font-semibold">Select a section</h1>
                 <p className="text-sm text-slate-500">Select a section where you need to show the quiz.</p>
                 <div className="flex items-center p-2 border border-zinc-200 rounded-md mt-4">
-                    <select {...register('section')} required className='w-full outline-none'>
+                    <select {
+                        ...register('section')} 
+                        required 
+                        className='w-full outline-none'
+                        value={selectedSection || ''}
+                        onChange={(e) => setSelectedSection(e.target.value)}>
+                        <option value="" disabled>
+                            {sections.length === 0 ? 'Loading sections...' : 'Select a section'}
+                        </option>
                         {sections.map(section => (
                             <option key={section.section_id} value={section.section_id} className='style-none'>
                                 {section.section_name}
