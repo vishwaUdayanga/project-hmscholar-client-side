@@ -50,6 +50,16 @@ export function AnnouncementListSkeleton(){
                 </div>
         </div>);
 }
+export function LayoutProfileSkeleton(){
+    return (
+        <div className="flex gap-6 items-center animate-pulse">
+            <div className="flex gap-2 items-center">
+                <div className="relative w-8 h-8 rounded-full bg-gray-300"></div>
+                <div className="w-20 h-4 bg-gray-300 rounded"></div>
+            </div>
+        </div>
+    );
+};
 
 export function CourseCardSkeleton() {
     return (

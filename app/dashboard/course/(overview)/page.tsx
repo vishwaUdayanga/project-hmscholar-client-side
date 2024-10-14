@@ -14,6 +14,7 @@ type Course = {
     enrollment_key: string;
     semester: number;
     lecturer_name: string;
+    course_image:string
 };
 
 type GroupedCourses = {

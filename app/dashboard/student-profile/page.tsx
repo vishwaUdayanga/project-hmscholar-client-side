@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getStudentProfile ,getEnrolledProgramCourse} from '@/app/api/student/data';
-import { updateStudentImage } from '@/app/api/student/update';
+// import { updateStudentImage } from '@/app/api/student/update';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
@@ -64,25 +64,7 @@ export default function StudentProfile() {
     }
   });
 
-
-  // const onSubmit = async (data: FormValues) => {
-  //   setIsUploadingImage(true);
-  //   if (!data.image) return; 
-
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append('image', data.image[0]);
-  //     // Implement your image upload logic here
-  //   } catch (error) {
-  //     console.error('Error uploading image:', error);
-  //   } finally {
-  //     setIsUploadingImage(false);
-  //     setShowModal(false);
-  //   }
-  // };
-
-             
-
+            
   useEffect(() => {
     const fetchStudent = async () => {
       const token = localStorage.getItem('token');
@@ -123,17 +105,18 @@ export default function StudentProfile() {
   }, [router]);
 
       const onSubmit = async (data: FormValues) => {
+        console.log("File uploaded");
         setIsUploadingImage(true);
         try {
             const image_data = new FormData();
             image_data.append('file', data.image[0]);
             image_data.append('file_path', studentData?.student_image || '');
 
-            const response = await updateStudentImage({ student_id: studentData?.student_id || '', image_data });
-            if (!response) {
-                throw new Error('Failed to update image');
-            }
-            setStudentData(response)
+            // const response = await updateStudentImage({ student_id: studentData?.student_id || '', image_data });
+            // if (!response) {
+            //     throw new Error('Failed to update image');
+            // }
+            // setStudentData(response)
             setShowModal(false);
         } catch (error) {
             console.error('Error updating image:', error);
@@ -153,12 +136,12 @@ export default function StudentProfile() {
       <div className="w-full p-4 border rounded-lg border-zinc-200 md:w-1/2 flex items-center gap-5 relative">
         <div className='relative w-20 h-20 rounded-full overflow-hidden'>
           <Image
-            src={studentData?.student_image || '/dashboard/announcements/user.jpg'}
+            src={(studentData?.student_image) ? `${studentData?.student_image}?sp=r&st=2024-09-28T21:44:46Z&se=2024-10-10T05:44:46Z&spr=https&sv=2022-11-02&sr=c&sig=OW4XAvKoGyoSRPZ7oVaj3ylp%2FpK22jVJypMOawi%2FZOM%3D` : '/dashboard/announcements/user.jpg'}
             alt={studentData?.name || 'User'}
             fill
             style={{ objectFit: 'cover' }}
             className="rounded-full"
-          />
+          />s
         </div>
 
 

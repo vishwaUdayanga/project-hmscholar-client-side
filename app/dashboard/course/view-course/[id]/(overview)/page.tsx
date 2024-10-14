@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import StudentSections from "@/app/ui/student/section";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form"; // Import useForm and Controller
-import enrollIncourses from "@/app/api/student/create";
+import {enrollIncourses} from "@/app/api/student/create";
 
 export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;

@@ -5,6 +5,7 @@ type Course = {
     course_id: string;
     course_name: string;
     lecturer_name: string;
+    course_image: string | null;
   };
 
 export default function CourseCard({ course }: { course: Course }) {
@@ -15,7 +16,7 @@ export default function CourseCard({ course }: { course: Course }) {
       className="card border border-slate-300 p-5 shadow-lg transition-transform transform hover:scale-105 w-full md:w-72 h-60 flex flex-col justify-between">
       <div className="card-image relative w-full h-40 rounded overflow-hidden">
         <Image
-          src={'/dashboard/courses/1.jpg'}
+          src={course.course_image ? `${course.course_image}?sp=r&st=2024-10-11T12:56:23Z&se=2024-10-25T20:56:23Z&spr=https&sv=2022-11-02&sr=c&sig=noC4IBN0mkEtULvu5GIxxYm2ZgrHn6aBZY2Kys%2Fw3Uw%3D` : '/dashboard/courses/1.jpg'}
           alt={course.course_name}
           fill
           style={{ objectFit: 'cover' }}

@@ -3,6 +3,8 @@ import Image from "next/image"
 import { getStudentProfile } from "@/app/api/student/data"
 import { useState,useEffect } from "react"
 import { useRouter } from 'next/navigation';
+import LogoutButton from "./logout";
+import { LayoutProfileSkeleton } from "../skeletons";
 
 type StudentProfile = {
     student_id:string
@@ -48,10 +50,17 @@ export default function Profile(){
       }, [router]);
     
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return(
+      <div className="flex gap-6 items-center">
+      <LogoutButton/>
+      <Image src="/dashboard/notification.png" alt="IHMA Notification" width={15} height={15} />
+      <LayoutProfileSkeleton/>
+  </div>
+    ) ;
     if (error) return <p>{error}</p>;
     return(
     <div className="flex gap-6 items-center">
+        <LogoutButton/>
         <Image src="/dashboard/notification.png" alt="IHMA Notification" width={15} height={15} />
         <Link
         href="/dashboard/student-profile" 

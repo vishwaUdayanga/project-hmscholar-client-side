@@ -16,10 +16,15 @@ export default async function Layout({ children, params }: { children: React.Rea
 
     return (
         <>
-            <div className="p-4 flex justify-between items-center flex-wrap gap-5">
+            <div className="p-4 flex justify-between items-center flex-wrap gap-5 w-full">
                 <h1 className="text-xl">{course_name}</h1>
             </div>
+            <div className="w-full">
             {children}
+
+            </div>
+                
         </>
+
     );
 }
