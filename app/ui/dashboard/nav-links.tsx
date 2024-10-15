@@ -61,7 +61,7 @@ const nportal_links = [
 
 export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {
   const pathname = usePathname();
-  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : admin_links;
+  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : actor === 'admin' ? admin_links : nportal_links;
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>

@@ -1,6 +1,16 @@
-export default async function getProgramDetails() {
+// export default async function getProgramDetails() {
+//     try {
+//         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/programs`);
+//         return response;
+//     } catch (error) {
+//         console.error('Error occurred:', error);
+//         throw error;
+//     }
+// }
+
+export async function getProgramDetails({program_id}: {program_id: string}) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/programs`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/program-details/${program_id}`);
         return response;
     } catch (error) {
         console.error('Error occurred:', error);
@@ -23,3 +33,4 @@ export default async function getProgramDetails() {
 //         throw error;
 //     }
 // }
+
