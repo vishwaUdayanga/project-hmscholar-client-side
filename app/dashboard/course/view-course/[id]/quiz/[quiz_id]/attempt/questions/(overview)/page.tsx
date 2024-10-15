@@ -9,11 +9,27 @@ import {
     getStudentQuestions,
 } from "@/app/api/student/data";
 import {
+    submitStudentQuiz,
     updateStudentMCQAnswer,
     updateStudentWrittenAnswer,
 } from "@/app/api/student/update";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState,useRef } from "react";
+
+type Quiz = {
+    quiz_id: string;
+    quiz_name: string;
+    quiz_duration: string;
+    quiz_total_marks: number;
+    quiz_description: string;
+    quiz_password: string;
+    quiz_no_of_questions: string;
+    is_enabled: boolean;
+    attempts: number;
+};
+
+type studentAttempt = {
+    is_enabled: boolean;
+};
 
 type StudentProfile = {
     student_id: string;
@@ -38,8 +54,10 @@ type McqAnswer = {
 };
 
 export default function At({ params }: { params: { quiz_id: string; id: string } }) {
+
+    const [timeLeft, setTimeLeft] = useState<number>(0);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const { id, quiz_id } = params;
-    const { control } = useForm();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -64,12 +82,24 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                 }
                 const data: StudentProfile = await studentResponse.json();
                 setStudentID(data.student_id);
+                const student_id = data.student_id;
 
                 const questionResponse = await getStudentQuestions({ quiz_id });
                 if (!questionResponse.ok) {
                     throw new Error('Failed to fetch quiz');
                 }
 
+                const attemptResponse = await getStudentAttempt({student_id:student_id,course_id:id,quiz_id:quiz_id});
+                if(!attemptResponse.ok)
+                {
+                    throw new Error('Quiz failed');
+                }
+                const attempt: studentAttempt = await attemptResponse.json();
+                if(attempt.is_enabled === false)
+                {
+                    window.location.href = `/dashboard/course/view-course/${id}/quiz/${quiz_id}/attempt`;
+                    return;
+                }
                 const questionData: Question[] = await questionResponse.json();
                 setQuestions(questionData);
                 setLoading(false);
@@ -77,9 +107,97 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                 console.error('Error fetching quiz data:', error);
             }
         };
+        const fetchQuizData = async () => {
+            const quizResponse = await getStudentQuiz({ quiz_id });
+            if (quizResponse.ok) {
+                const quizData: Quiz = await quizResponse.json();
+                const totalDuration = parseInt(quizData.quiz_duration)*60; // Convert minutes to seconds
+                initializeTimer(totalDuration);
+            }
+        };
 
+        
+        fetchQuizData();
         fetchQuestions();
-    }, [quiz_id]);
+    }, [quiz_id,studentID]);
+
+    const initializeTimer = (totalDuration: number) => {
+    const savedTime = localStorage.getItem(`quiz_timer_${quiz_id}`);
+    
+    let startTime: number;
+    if (savedTime) {
+        const timePassed = Math.floor((Date.now() - parseInt(savedTime)) / 1000);
+        const remainingTime = Math.max(totalDuration - timePassed, 0);
+        setTimeLeft(remainingTime);
+        startTime = Date.now();
+    } else {
+        startTime = Date.now();
+        localStorage.setItem(`quiz_timer_${quiz_id}`, String(startTime));
+        setTimeLeft(totalDuration);
+    }
+
+    if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+    }
+
+        intervalRef.current = setInterval(() => {
+            setTimeLeft((prevTimeLeft) => {
+                if (prevTimeLeft <= 1) {
+                    clearInterval(intervalRef.current!);
+                    console.log('Timer reached zero, submitting quiz.');
+                
+                    // Submit the quiz when time reaches zero
+                    if (studentID) {
+                        submitQuizOnTimeOut();
+                    }
+                
+                    return 0;
+                }
+                
+                return prevTimeLeft - 1;
+            });
+        }, 1000);
+
+};
+
+const submitQuizOnTimeOut = async () => {
+    
+    if (studentID) {
+        
+        console.log('meka atulata yanawai');
+        try {
+            const response = await submitStudentQuiz({
+                student_id: studentID, // Use local variable
+                quiz_id: quiz_id,
+                course_id: id,
+            });
+    
+            if (response.ok) {
+                alert("Time's up! Quiz submitted successfully.");
+                // Reset the timer
+                localStorage.removeItem(`quiz_timer_${quiz_id}`);
+                window.location.href = `/dashboard/course/view-course/${id}`;
+            } else {
+                alert("Failed to submit the quiz on time out.");
+            }
+        } catch (error) {
+            console.error("Error submitting quiz on time out:", error);
+            alert("An error occurred while submitting the quiz.");
+        }
+    } else {
+        console.error("Student ID is not available.");
+    }
+};
+
+
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                localStorage.setItem(`quiz_timer_${quiz_id}`, String(Date.now()));
+            }
+        };
+    }, []);
 
     useEffect(() => {
         const fetchMcqAnswers = async () => {
@@ -136,11 +254,30 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
         }
     }, [currentIndex, questions, studentID]);
 
-    const handleNextQuestion = () => {
+    const handleNextQuestion = async () => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            alert('This is the last question.');
+            const isConfirmed = window.confirm('Are you sure you want to submit the quiz?');
+            if (isConfirmed && studentID) {
+                try {
+                    const response = await submitStudentQuiz({
+                        student_id: studentID,
+                        quiz_id: quiz_id,
+                        course_id: id
+                    });
+                    if (response.ok) {
+                        localStorage.removeItem(`quiz_timer_${quiz_id}`);
+                        alert('Quiz submitted successfully.');
+                        window.location.href = `/dashboard/course/view-course/${id}`;
+                    } else {
+                        alert('Failed to submit quiz.');
+                    }
+                } catch (error) {
+                    console.error('Error submitting quiz:', error);
+                    alert('An error occurred while submitting the quiz.');
+                }
+            }
         }
     };
 
@@ -174,7 +311,7 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                 answer: newAnswer
             });
         } else if (questionType === "mcq") {
-            const answerId = e.target.value; // Get the answer ID from the selected radio button
+            const answerId = e.target.value; 
             await updateStudentMCQAnswer({
                 student_id: studentID,
                 quiz_id: quiz_id,
@@ -184,17 +321,26 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
             });
         }
     };
+        const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    };
 
     if (loading) {
         return <p>Loading...</p>;
     }
 
     return (
-        <div className="quiz-container">
-            <h1>Quiz</h1>
+        <div className="quiz-container flex justify-center items-center">
+            <div className="w-4/6">
+            <h1 className="font-bold mb-6">Quiz</h1>
+                         <div className="timer">
+                 <p className="mb-6">{formatTime(timeLeft)}</p>
+            </div>
             {questions.length > 0 && (
                 <div>
-                    <p>{questions[currentIndex].questionText}</p>
+                    <p className="font-bold mb-4">{questions[currentIndex].questionText}</p>
                     {questions[currentIndex].questionType === "written" && (
                         <form>
                             <textarea
@@ -225,7 +371,6 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                         </form>
                     )}
 
-                    {/* Navigation Squares */}
                     <div className="flex justify-center space-x-2 mt-4">
                         {questions.map((_, index) => (
                             <div
@@ -243,19 +388,22 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                     <div className="flex justify-between mt-4">
                         <button
                             onClick={handlePreviousQuestion}
-                            className="py-2 px-4 rounded-md text-white bg-gray-500 hover:bg-gray-700 border"
+                            className="py-2 px-4 bg-black text-white rounded-md"
+                            disabled={currentIndex === 0}
                         >
-                            Back
+                            Previous
                         </button>
+
                         <button
                             onClick={handleNextQuestion}
-                            className="py-2 px-4 rounded-md text-white bg-black hover:bg-white hover:text-black border"
+                            className="py-2 px-4 bg-black text-white rounded-md"
                         >
                             {currentIndex === questions.length - 1 ? 'Submit and Finish' : 'Next'}
                         </button>
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 }

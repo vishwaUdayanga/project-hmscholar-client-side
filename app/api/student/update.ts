@@ -158,3 +158,25 @@ export async function updateStudentWrittenAnswer({
         throw error;
     }
 }
+
+export async function submitStudentQuiz({
+    student_id,
+    quiz_id,
+    course_id}: { 
+        student_id: string,
+        course_id: string,
+        quiz_id: string,}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student/student-attempts/submission/${student_id}/${course_id}/${quiz_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
