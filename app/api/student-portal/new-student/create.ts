@@ -89,3 +89,45 @@ export async function enrollStudent({data, program_id} : {data: FormData, progra
         throw error;
     }
 }
+
+export async function registerCurrentStudent({data, student_id} : {data: FormData, student_id: string}) {
+    try {
+        const receipt_doc = data.get('receipt_doc');
+
+        let receipt_path = '';
+
+        if (receipt_doc) {
+            const file: File = receipt_doc as unknown as File;
+            const fileExtension = file.name.split('.').pop();
+            const newFilename = `${student_id}-receipt-${Date.now()}.${fileExtension}`;
+            const blockBlobClient = newStudentMaterialsContainerClient.getBlockBlobClient(newFilename);
+
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            await blockBlobClient.uploadData(buffer);
+
+            receipt_path = blockBlobClient.url;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/register_current_student_to_semester`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                student_id,
+                receipt_path
+            })
+        });
+
+        if (response.status !== 200) {
+            throw new Error('Failed to register current student');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

@@ -67,7 +67,7 @@ export default function SignInForm() {
                 const result = await response.json()
                 if (result.type == "student") {
                     localStorage.setItem('token', result.access_token)
-                    router.push('/portal/student')
+                    router.push('/current-student-portal/dashboard')
                 } else if (result.type == "admin") {
                     localStorage.setItem('token', result.access_token)
                     router.push('/portal/admin/dashboard')

@@ -1,13 +1,3 @@
-// export default async function getProgramDetails() {
-//     try {
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/programs`);
-//         return response;
-//     } catch (error) {
-//         console.error('Error occurred:', error);
-//         throw error;
-//     }
-// }
-
 export async function getProgramDetails({program_id}: {program_id: string}) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/program-details/${program_id}`);
@@ -18,19 +8,32 @@ export async function getProgramDetails({program_id}: {program_id: string}) {
     }
 }
 
+export async function getUserDetails({email} : {email: string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/user-details-for-student-portal/${email}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
 
-// export default async function getProgramDetails() {
-//     try {
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-portal/programs`);
+export async function getStudentDetails({email} : {email: string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student-details/${email}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
 
-//         // Check if the response was successful
-
-//         // Parse the JSON and return it
-//         const data = await response.json();
-//         return data;
-//     } catch (error) {
-//         console.error('Error occurred:', error);
-//         throw error;
-//     }
-// }
-
+export async function getPaymentDetailsById({student_id} : {student_id: string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/is_in_payment/${student_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

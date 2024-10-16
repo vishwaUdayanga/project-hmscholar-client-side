@@ -336,3 +336,25 @@ export const NewStudentSchema = z.object({
             message: 'Only word documents and PDFs are allowed',
         }),
 })
+
+export const PaymentUploadSchema = z.object({
+    receipt_doc: z
+        .any()
+        .refine((fileList: FileList | undefined) => {
+            return fileList && fileList.length > 0;
+        }, { message: 'You must select a file' })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+        }, {
+            message: 'Only word documents and PDFs are allowed',
+        }),
+})
