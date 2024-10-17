@@ -8,7 +8,7 @@ export async function getProgramDetails({program_id}: {program_id: string}) {
     }
 }
 
-export async function getUserDetails({email} : {email: string}) {
+export async function getUserDetails({email} : {email: string}) { //Called by every other actors to get details for their Navigation bar
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/user-details-for-student-portal/${email}`);
         return response;

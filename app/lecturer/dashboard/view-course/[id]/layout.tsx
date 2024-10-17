@@ -26,6 +26,7 @@ export default async function Layout({ children, params }: { children: React.Rea
                     <Link href={`/lecturer/dashboard/view-course/${id}/add-student`} className="px-3 py-2 h-fit bg-sky-200 text-sky-600 rounded-md text-xs cursor-pointer">Add students</Link>
                     <Link href={`/lecturer/dashboard/view-course/${id}/add-announcements`} className="px-2 h-fit py-2 bg-rose-200 text-rose-600 rounded-md text-xs cursor-pointer">Add announcements</Link>
                     <Link href={`/lecturer/dashboard/view-course/${id}/settings`} className="px-2 h-fit py-2 bg-yellow-200 text-yellow-600 rounded-md text-xs cursor-pointer">Settings</Link>
+                    <Link href={`/lecturer/dashboard/view-course/${id}/student-quiz-answers`} className="px-2 h-fit py-2 bg-green-200 text-green-600 rounded-md text-xs cursor-pointer">Student Answers</Link>
                 </div>
             </div>
             {children}

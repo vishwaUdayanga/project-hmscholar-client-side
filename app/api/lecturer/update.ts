@@ -309,3 +309,27 @@ export async function updateCourseLecturer({course_id, data} : {course_id: strin
         throw error;
     }
 }
+
+type WrittenAnswers = {
+    question_id: string;
+    question: string;
+    answer: string;
+    marks: number;
+}
+
+export async function updateWrittenAnswers({student_id, quiz_id, written_answers} : {student_id: string, quiz_id: string, written_answers: WrittenAnswers[]}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/edit-written-answers/${student_id}/${quiz_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ written_answers })
+        });
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

@@ -49,14 +49,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         };
         verifyToken();
     }, [])
-
-    useEffect(() => {
-        if (loading) {
-            
-        } else {
-            console.log(user);
-        }
-    }, [loading])
     return (
         <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
         <div className={
