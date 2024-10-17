@@ -15,18 +15,13 @@ const student_links = [
 const admin_links = [
   {
     name: 'New students',
-    href: '/admin-portal/dashboard',
+    href: '/student-portal-admin/dashboard',
     icon: '/dashboard/course.png',
   },
   {
     name: 'Current students',
-    href: '/admin-portal/dashboard/current-students',
+    href: '/student-portal-admin/dashboard/current-students',
     icon: '/dashboard/user.png',
-  },
-  {
-    name: 'Programs',
-    href: '/admin-portal/dashboard/programs',
-    icon: '/dashboard/home.png',
   },
 ];
 

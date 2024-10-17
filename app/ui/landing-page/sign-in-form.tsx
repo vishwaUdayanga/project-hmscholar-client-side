@@ -70,7 +70,7 @@ export default function SignInForm() {
                     router.push('/current-student-portal/dashboard')
                 } else if (result.type == "admin") {
                     localStorage.setItem('token', result.access_token)
-                    router.push('/portal/admin/dashboard')
+                    router.push('/student-portal-admin/dashboard')
                 } else {
                     setButtonTextPortal('Go to Portal')
                     setIsLoadingPortal(false)

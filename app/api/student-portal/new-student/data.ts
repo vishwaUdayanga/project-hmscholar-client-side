@@ -37,3 +37,23 @@ export async function getPaymentDetailsById({student_id} : {student_id: string})
         throw error;
     }
 }
+
+export async function getNewStudents({program_id} : {program_id: string}) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/new-student-enrollments/${program_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getCurrentStudentPayments(){
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/current-student-payments`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
