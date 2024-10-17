@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validateLoginToLms } from '../api/auth/authentication';
 
+import Lottie from 'lottie-react';
+import MainLoading from '../../public/animations/main-loading.json';
+
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const Wrapper: React.FC<P> = (props: P) => {
         const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -73,7 +76,9 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
         }, [router]);
 
         if (!isAuthenticated) {
-            return <div>Redirecting...</div>;
+            return <div className='w-full h-screen flex items-center justify-center'>
+                <Lottie animationData={MainLoading} loop={true} className='w-40 h-40'/>
+            </div>;
         }
 
         return <WrappedComponent {...props} />;
