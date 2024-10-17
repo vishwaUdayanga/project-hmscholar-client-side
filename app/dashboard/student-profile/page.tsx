@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getStudentProfile ,getEnrolledProgramCourse} from '@/app/api/student/data';
-// import { updateStudentImage } from '@/app/api/student/update';
+import { updateStudentImage } from '@/app/api/student/update';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
@@ -20,7 +20,7 @@ type StudentProfile = {
   name: string;
   program: string;
   email: string;
-  password: string; // Consider not exposing this
+  password: string;
   student_image: string;
 };
 
@@ -112,19 +112,22 @@ export default function StudentProfile() {
             image_data.append('file', data.image[0]);
             image_data.append('file_path', studentData?.student_image || '');
 
-            // const response = await updateStudentImage({ student_id: studentData?.student_id || '', image_data });
-            // if (!response) {
-            //     throw new Error('Failed to update image');
-            // }
-            // setStudentData(response)
+            console.log(image_data.get('file_path'));
+            const response = await updateStudentImage({ lecturer_id: studentData?.student_id || '', image_data });
+            if (!response) {
+                throw new Error('Failed to update image');
+            }
+            setStudentData(response)
             setShowModal(false);
         } catch (error) {
             console.error('Error updating image:', error);
             setError('Error updating image');
         } finally {
             setIsUploadingImage(false);
+            window.location.href = `/dashboard/student-profile`;
+            return;
         }
-    }
+    }    
 
   if (loading) return <><ProfileSkeleton/></>;
   if (error) return <p>No details to show...</p>;
@@ -136,12 +139,12 @@ export default function StudentProfile() {
       <div className="w-full p-4 border rounded-lg border-zinc-200 md:w-1/2 flex items-center gap-5 relative">
         <div className='relative w-20 h-20 rounded-full overflow-hidden'>
           <Image
-            src={(studentData?.student_image) ? `${studentData?.student_image}?sp=r&st=2024-09-28T21:44:46Z&se=2024-10-10T05:44:46Z&spr=https&sv=2022-11-02&sr=c&sig=OW4XAvKoGyoSRPZ7oVaj3ylp%2FpK22jVJypMOawi%2FZOM%3D` : '/dashboard/announcements/user.jpg'}
+            src={(studentData?.student_image) ? `${studentData?.student_image}?sp=r&st=2024-10-17T04:39:02Z&se=2024-10-26T12:39:02Z&spr=https&sv=2022-11-02&sr=c&sig=VFMrXTKd2ynhm%2F71aTfG7DzOdaFznvQIuggVndJyba4%3D` : '/dashboard/announcements/user.jpg'}
             alt={studentData?.name || 'User'}
             fill
             style={{ objectFit: 'cover' }}
             className="rounded-full"
-          />s
+          />
         </div>
 
 
