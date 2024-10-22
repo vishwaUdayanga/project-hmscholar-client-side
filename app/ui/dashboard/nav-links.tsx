@@ -28,7 +28,7 @@ const lecturer_links = [
   { name: 'Home', href: '/lecturer/dashboard', icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
-    href: '/lecturer/dashboard',
+    href: '/lecturer/dashboard/my-courses',
     icon: '/dashboard/course.png',
   },
   { name: 'My Account', href: '/lecturer/dashboard/my-account', icon: '/dashboard/user.png' },

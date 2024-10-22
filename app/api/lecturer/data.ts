@@ -147,3 +147,24 @@ export async function getWrittenAnswers({ student_id, quiz_id }: { student_id: s
         throw error;
     }
 }
+
+export async function getAllStudents() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/lecturer/get-all-students`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+
+export async function getEnrolledStudents({ courseId }: { courseId: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-enrolled-students/${courseId}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

@@ -130,3 +130,19 @@ export async function createQuiz({
         throw error;
     }
 }
+
+export async function enrollStudentToCourse({ student_id, course_id } : { student_id: string, course_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/enroll-student/${student_id}/${course_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
