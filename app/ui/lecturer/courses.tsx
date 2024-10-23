@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getLecturer, getLecturerCourses } from "@/app/api/lecturer/data";
 import { CoursesSkeleton } from '@/app/ui/skeletons';
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Course = {
     course_id: string;
@@ -33,8 +34,31 @@ const groupCoursesBySemester = (courses: Course[]) => {
 
 export default function Courses() {
     const [groupedCourses, setGroupedCourses] = useState<GroupedCourses>({});
+    const [filteredCourses, setFilteredCourses] = useState<GroupedCourses>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const query = searchParams.get('query');
+        if (!query) {
+            setFilteredCourses(groupedCourses);
+            return;
+        }
+
+        const filteredCourses = Object.keys(groupedCourses).reduce((acc: GroupedCourses, key) => {
+            const courses = groupedCourses[key].filter((course) => course.course_name.toLowerCase().includes(query.toLowerCase()));
+            if (courses.length) {
+                acc[key] = courses;
+            }
+            return acc;
+        }, {});
+
+        setFilteredCourses(filteredCourses);
+    }
+    , [searchParams, groupedCourses]);
+
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -79,7 +103,7 @@ export default function Courses() {
 
     return (
         <div className="flex flex-col gap-6 w-full lg:flex-row lg:gap-16">
-            {Object.keys(groupedCourses).map((semesterKey) => {
+            {Object.keys(filteredCourses).length >0 ? Object.keys(filteredCourses).map((semesterKey) => {
                 return (
                     <div key={semesterKey} className="w-full lg:w-4/12">
                         <p className="text-sm mb-4 text-gray-400">{semesterKey}</p>
@@ -111,7 +135,7 @@ export default function Courses() {
                         </div>
                     </div>
                 )
-            })}
+            }) : <p>No courses to show...</p>}
         </div>
     );
 }

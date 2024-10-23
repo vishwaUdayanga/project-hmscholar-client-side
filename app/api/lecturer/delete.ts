@@ -85,3 +85,18 @@ export async function deleteMaterial({ material_id, material_path } : { material
         throw error;
     }
 }
+
+export async function deleteEnrolledStudent({ student_id, course_id } : { student_id: string, course_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/delete-student-enrollment/${student_id}/${course_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.json();
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

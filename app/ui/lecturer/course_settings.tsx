@@ -94,7 +94,7 @@ export default function CourseSettings({course_id} : {course_id: string}) {
         };
 
         fetchCourseSettings();
-    }, [course_id]);
+    }, [course_id, reset]);
 
     if (isLoading) {
         return <p>Loading...</p>

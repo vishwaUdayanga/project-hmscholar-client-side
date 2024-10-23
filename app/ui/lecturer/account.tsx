@@ -88,7 +88,7 @@ export default function Account() {
         };
 
         fetchLecturer();
-    }, []);
+    }, [editReset]);
 
     const onSubmit = async (data: FormValues) => {
         setIsUploadingImage(true);

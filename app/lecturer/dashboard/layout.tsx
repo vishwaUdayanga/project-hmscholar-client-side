@@ -5,15 +5,52 @@ import withAuth from '@/app/protection/protect';
 import Image from 'next/image';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SideNav from '@/app/ui/dashboard/sidenav';
+import { getUserDetails } from '@/app/api/student-portal/new-student/data';
+
+type User = {
+    name : string,
+    image_path : string
+}
+
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [toggle, setToggle] = useState(true);
+    const [user, setUser] = useState<User>({name: '', image_path: ''});
+    const [loading, setLoading] = useState(true);
 
     const handleToggle = () => {
         setToggle(!toggle);
     }
+
+    useEffect(() => {
+        const verifyToken = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('No token found');
+            } else {
+                try {
+                    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                    const email = decodedToken.sub;
+                    if (email) {
+                        const response = await getUserDetails({email});
+                        const result: User = await response.json();
+                        
+                        setUser(result);
+                        setLoading(false);
+                    } else {
+                        console.error('Email is undefined');
+                    }
+                } catch (error) {
+                    console.error('Error decoding token:', error);
+                    localStorage.removeItem('token');
+                }
+            }
+        };
+        verifyToken();
+    }, [])
+
     return (
         <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
         <div className={
@@ -32,23 +69,25 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <Image src="/dashboard/menu.png" alt="IHMA Menu" width={15} height={15} onClick={handleToggle} className="cursor-pointer"/>
             <div className="flex gap-6 items-center">
                 <Image src="/dashboard/notification.png" alt="IHMA Notification" width={15} height={15} />
-                <Link
-                href="/dashboard" 
-                className="flex gap-2 items-center"
-                >
-                <div
-                    className='relative w-8 h-8 rounded-full overflow-hidden'
-                >
-                    <Image
-                    src='/dashboard/user.jpg'
-                    alt={'Amanda Peris'}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    className="rounded-full"
-                    />
-                </div>
-                <p className="text-sm font-bold">Amanda Peris</p>
-                </Link>
+                { loading ? <p>Loading...</p> :
+                    <Link
+                    href="/dashboard" 
+                    className="flex gap-2 items-center"
+                    >
+                        <div
+                            className='relative w-8 h-8 rounded-full overflow-hidden'
+                        >
+                            <Image
+                            src={user.image_path ? `${user.image_path}?sp=r&st=2024-10-17T04:39:02Z&se=2024-10-26T12:39:02Z&spr=https&sv=2022-11-02&sr=c&sig=VFMrXTKd2ynhm%2F71aTfG7DzOdaFznvQIuggVndJyba4%3D` : '/dashboard/user.jpg'}
+                            alt={user.name}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className="rounded-full"
+                            />
+                        </div>
+                        <p className="text-sm font-bold">{user.name}</p>
+                    </Link>
+                }
             </div>
             </div>
             {children}

@@ -27,7 +27,7 @@ const lecturer_links = [
   { name: 'Home', href: '/lecturer/dashboard', icon: '/dashboard/home.png' },
   {
     name: 'My Courses',
-    href: '/lecturer/dashboard',
+    href: '/lecturer/dashboard/my-courses',
     icon: '/dashboard/course.png',
   },
   { name: 'My Account', href: '/lecturer/dashboard/my-account', icon: '/dashboard/user.png' },
@@ -43,9 +43,24 @@ const admin_links = [
   { name: 'Students', href: '/admin/dashboard/students', icon: '/dashboard/user.png' },
 ];
 
+const nportal_links = [
+  { name: 'Program1', 
+    href: '/portal', 
+    icon: '/portal/programs/1.png' },
+  {
+    name: 'Program2',
+    href: '/portal',
+    icon: '/portal/programs/2.png',
+  },
+  { name: 'Program3', 
+    href: '/portal',
+    icon: '/portal/programs/3.png' },
+];
+
+
 export default function NavLinks({isToggle, actor}: {isToggle: boolean, actor: string}) {
   const pathname = usePathname();
-  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : admin_links;
+  const links = actor === 'student' ? student_links : actor === 'lecturer' ? lecturer_links : actor === 'admin' ? admin_links : nportal_links;
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>

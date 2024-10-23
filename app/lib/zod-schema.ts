@@ -253,3 +253,108 @@ export const EditCourseSchema = z.object({
             message: 'Only JPEG and PNG images are allowed',
         }),
 })
+
+//Portal schemas
+
+// name=Column(String,index=True)
+//     address=Column(String,index=True)
+//     gender=Column(String,index=True)
+//     email=Column(String,index=True)
+//     OL_path=Column(String,index=True)
+//     AL_path=Column(String)
+//     payment_path=Column(String,index=True)
+//     program_id=Column(UUID, ForeignKey("program.program_id"),index=True)
+//     date = Column(Date, default=datetime.date.today, index=True)
+
+export const NewStudentSchema = z.object({
+    name: z
+        .string({ message: 'Name is required' })
+        .min(5, { message: 'Name must be at least 5 characters long' })
+        .max(50, { message: 'Name must be at most 50 characters long' }),
+    address: z
+        .string({ message: 'Address is required' })
+        .min(5, { message: 'Address must be at least 5 characters long' })
+        .max(50, { message: 'Address must be at most 50 characters long' }),
+    email: z
+        .string({ message: 'Email is required' })
+        .email({ message: 'Email is invalid' }),
+    OL_doc: z
+        .any()
+        .refine((fileList: FileList | undefined) => {
+            return fileList && fileList.length > 0;
+        }, { message: 'You must select a file' })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+        }, {
+            message: 'Only word documents and PDFs are allowed',
+        }),
+    AL_doc: z
+        .any()
+        .refine((fileList: FileList | undefined) => {
+            return fileList && fileList.length > 0;
+        }, { message: 'You must select a file' })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+        }, {
+            message: 'Only word documents and PDFs are allowed',
+        }),
+    payment_doc: z
+        .any()
+        .refine((fileList: FileList | undefined) => {
+            return fileList && fileList.length > 0;
+        }, { message: 'You must select a file' })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+        }, {
+            message: 'Only word documents and PDFs are allowed',
+        }),
+})
+
+export const PaymentUploadSchema = z.object({
+    receipt_doc: z
+        .any()
+        .refine((fileList: FileList | undefined) => {
+            return fileList && fileList.length > 0;
+        }, { message: 'You must select a file' })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return file.size < 5000000;
+        }, {
+            message: 'File size should be less than 5MB',
+        })
+        .refine((fileList: FileList | undefined) => {
+            if (!fileList || fileList.length === 0) return true;
+            const file = fileList[0];
+            return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+        }, {
+            message: 'Only word documents and PDFs are allowed',
+        }),
+})

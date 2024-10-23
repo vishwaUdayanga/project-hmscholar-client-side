@@ -45,3 +45,19 @@ export async function createStudent({email, password } : { email: string, passwo
         throw error;
     }
 }
+
+export async function assignLecturerToCourse({ course_id, lecturer_id } : { course_id: string, lecturer_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/assign_lecturer/${course_id}/${lecturer_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ course_id, lecturer_id })
+        });
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

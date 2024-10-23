@@ -117,3 +117,54 @@ export async function getCourseSettings({ course_id }: { course_id: string }) {
         throw error;
     }
 }
+
+export async function getQuizzes({ courseId }: { courseId: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-quizzes/${courseId}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getStudentAttempts({ quiz_id }: { quiz_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-student-attempts/${quiz_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getWrittenAnswers({ student_id, quiz_id }: { student_id: string, quiz_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-written-answers/${student_id}/${quiz_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getAllStudents() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/lecturer/get-all-students`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+
+export async function getEnrolledStudents({ courseId }: { courseId: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/get-enrolled-students/${courseId}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
