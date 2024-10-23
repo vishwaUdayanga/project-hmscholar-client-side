@@ -91,7 +91,7 @@ export default function Courses() {
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
                                                     <Image
-                                                        src={course.course_image ? `${course.course_image}?sp=r&st=2024-10-11T12:56:23Z&se=2024-10-25T20:56:23Z&spr=https&sv=2022-11-02&sr=c&sig=noC4IBN0mkEtULvu5GIxxYm2ZgrHn6aBZY2Kys%2Fw3Uw%3D` : '/dashboard/courses/1.jpg'}
+                                                        src={course.course_image ? `${course.course_image}?sp=r&st=2024-10-11T03:23:52Z&se=2024-10-26T11:23:52Z&spr=https&sv=2022-11-02&sr=c&sig=j9bm0r%2F1ublueF5hAeTTja5w7EUdkalfzZo%2BNw0zzZM%3D` : '/dashboard/courses/1.jpg'}
                                                         alt={course.course_name}
                                                         fill
                                                         style={{ objectFit: 'cover' }}
