@@ -309,3 +309,59 @@ export async function updateCourseLecturer({course_id, data} : {course_id: strin
         throw error;
     }
 }
+
+export async function updateStudentImage({lecturer_id, image_data} : {lecturer_id: string, image_data: FormData}) {
+    try {
+        const file: File | null = image_data.get('file') as unknown as File;
+        const file_path = image_data.get('file_path') as string | undefined;
+        let lecturer_image = '';
+        if (file) {
+            try {
+                if (file_path) {
+                    try {
+                        const existingFilename = file_path.split('/').pop();
+                        if (existingFilename) {
+                            const blockBlobClient = containerClientProfilePictures.getBlockBlobClient(existingFilename);
+                            await blockBlobClient.delete();
+                        }
+                    } catch (error) {
+                        console.error('Error deleting old file:', error);
+                        throw error;
+                    }
+                }
+
+                const fileExtension = file.name.split('.').pop();
+                const newFilename = `${lecturer_id}-${Date.now()}.${fileExtension}`;
+                const blockBlobClient = containerClientProfilePictures.getBlockBlobClient(newFilename);
+
+                const arrayBuffer = await file.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+
+                await blockBlobClient.uploadData(buffer);
+
+                const fileUrl = blockBlobClient.url;
+                lecturer_image = fileUrl;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                throw error;
+            }
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API}/edit-student-image/${lecturer_id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ lecturer_image })
+                });
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error occurred:', error);
+                throw error;
+            }
+        }
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

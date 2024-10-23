@@ -167,7 +167,7 @@ const submitQuizOnTimeOut = async () => {
         console.log('meka atulata yanawai');
         try {
             const response = await submitStudentQuiz({
-                student_id: studentID, // Use local variable
+                student_id: studentID,
                 quiz_id: quiz_id,
                 course_id: id,
             });

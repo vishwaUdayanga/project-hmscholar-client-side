@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getStudentProfile ,getEnrolledProgramCourse} from '@/app/api/student/data';
-import { updateStudentImage } from '@/app/api/student/update';
+import { updateStudentImage } from '@/app/api/lecturer/update';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
