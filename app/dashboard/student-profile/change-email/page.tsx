@@ -60,7 +60,7 @@ export default function UpdateEmailForm() {
       }
     };
     fetchEmail();
-  }, []);
+  }, [router]);
   
 
   // Handle form submission

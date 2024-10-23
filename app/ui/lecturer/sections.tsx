@@ -53,7 +53,7 @@ export default function Sections({course_id} : {course_id: string}) {
         };
 
         fetchSections();
-    }, []);
+    }, [course_id]);
 
     const handleDelete = async (section_id: string | null) => {
         try {

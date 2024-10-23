@@ -23,6 +23,23 @@ export default function EditMaterialForm({material_id}: {material_id: string}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [material, setMaterial] = useState<Material>();
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [buttonText, setButtonText] = useState("Save Changes")
+
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+    const [buttonTextDelete, setButtonTextDelete] = useState("Delete Material")
+    const [submissionType, setSubmissionType] = useState<string | null>(null)
+
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
+        resolver: zodResolver(EditMaterialSchema),
+        mode: 'onTouched',
+        defaultValues: {
+            material_name: '',
+            file: undefined
+        }
+    });
+
     useEffect(() => {
         const fetchMaterial = async () => {
             try {
@@ -45,23 +62,7 @@ export default function EditMaterialForm({material_id}: {material_id: string}) {
         };
 
         fetchMaterial();
-    }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [buttonText, setButtonText] = useState("Save Changes")
-
-    const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-    const [buttonTextDelete, setButtonTextDelete] = useState("Delete Material")
-    const [submissionType, setSubmissionType] = useState<string | null>(null)
-
-    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
-        resolver: zodResolver(EditMaterialSchema),
-        mode: 'onTouched',
-        defaultValues: {
-            material_name: '',
-            file: undefined
-        }
-    });
+    }, [material_id, reset]);
     
     const onSubmit = async (data: FormValues) => {
         if (submissionType === 'edit') {

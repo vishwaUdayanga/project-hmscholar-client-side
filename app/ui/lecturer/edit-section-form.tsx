@@ -24,6 +24,20 @@ export default function EditSectionForm({section_id}: {section_id: string}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [section, setSection] = useState<Section>();
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [buttonText, setButtonText] = useState("Save Changes")
+
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
+        resolver: zodResolver(AddSectionSchema),
+        mode: 'onTouched',
+        defaultValues: {
+            title: '',
+            description: '',
+            files: [{ name: '', file: null }]
+        }
+    });
+
     useEffect(() => {
         const fetchSection = async () => {
             try {
@@ -47,20 +61,7 @@ export default function EditSectionForm({section_id}: {section_id: string}) {
         };
 
         fetchSection();
-    }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [buttonText, setButtonText] = useState("Save Changes")
-
-    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
-        resolver: zodResolver(AddSectionSchema),
-        mode: 'onTouched',
-        defaultValues: {
-            title: '',
-            description: '',
-            files: [{ name: '', file: null }]
-        }
-    });
+    }, [section_id, reset]);
 
     const { fields, append, remove } = useFieldArray({
         control,

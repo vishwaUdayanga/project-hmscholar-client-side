@@ -15,11 +15,11 @@ const ProgramCard = ({ program_id, program_name, duration, universityImage }: Pr
             <div className="flex border rounded-lg shadow-md p-6 bg-white w-full sm:max-w-md md:max-w-lg lg:max-w-2xl  xl:max-w-4xl mt-4 mb-4 relative">
                 {/* University Image */}
                 <div className="flex-shrink-0 mb-4 sm:mb-0">
-                    <img
+                    {/* <img
                         src={universityImage}
                         alt="University"
                         className="w-32 h-32 object-cover rounded-lg mr-0 sm:mr-6"
-                    />
+                    /> */}
                 </div>
 
                 {/* Program Details */}

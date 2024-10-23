@@ -73,7 +73,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
             verifyToken();
             const interval = setInterval(() => checkTokenExpiration(), 60000);
             return () => clearInterval(interval);
-        }, [router]);
+        }, [router, checkTokenExpiration]); // CheckTokenExpiration changed
 
         if (!isAuthenticated) {
             return <div className='w-full h-screen flex items-center justify-center'>

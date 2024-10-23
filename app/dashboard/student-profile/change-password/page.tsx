@@ -64,7 +64,7 @@ export default function UpdatePasswordForm() {
       }
     };
     fetchProfile();
-  }, []);
+  }, [router]);
 
   // Handle form submission
   const onSubmit = async (data: FormValues) => {

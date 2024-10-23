@@ -74,7 +74,7 @@ export default function WrittenAnswersForm({student_id, quiz_id} : {student_id: 
 
             submitWrittenAnswers()
         }
-    }, [isSubmitting])
+    }, [isSubmitting, quiz_id, student_id, writtenAnswers])
 
     return (
         <div className="w-full">

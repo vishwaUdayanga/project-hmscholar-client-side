@@ -107,7 +107,7 @@ export default function CurrentStudentForm() {
         if (!loading && student.student_id) { 
             fetchPaymentDetails();
         }
-    }, [student.student_id, loading]);
+    }, [student.student_id, loading, handleClear]);
 
     if (loading) {
         return <h1>Loading...</h1>

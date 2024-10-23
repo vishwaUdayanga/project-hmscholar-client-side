@@ -7,6 +7,7 @@ import { CourseSkeletonPortal } from '@/app/ui/skeletons';
 import Link from "next/link";
 
 type Course = {
+    course_id: string;
     program_name: string;
     program_description: string;
     university_name: string;
@@ -59,7 +60,7 @@ export default function ProgramDetailsComp({program_id} : {program_id: string}) 
         };
 
         fetchCourses();
-    }, []);
+    }, [program_id]);
 
     useEffect(() => {
         console.log(groupedCourses);
@@ -78,7 +79,7 @@ export default function ProgramDetailsComp({program_id} : {program_id: string}) 
                             {
                                 groupedCourses[semesterKey].map((course) => {
                                     return (
-                                        <div className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between">
+                                        <div className="flex gap-7 items-center border-b border-b-slate-200 pb-3 justify-between" key={course.course_id}>
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
                                                     <Image
