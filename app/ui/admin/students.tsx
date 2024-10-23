@@ -5,6 +5,8 @@ import { getStudents } from "@/app/api/admin/data";
 import Link from "next/link";
 import { deleteStudent } from "@/app/api/admin/delete";
 import Image from "next/image";
+import { jsPDF } from 'jspdf'; 
+import 'jspdf-autotable';
 
 type Student = {
     student_id: string;
@@ -49,11 +51,39 @@ export default function Students() {
         }
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("Students Report", 14, 16);
+
+        const tableColumn = ["Student number", "Student email"];
+        const tableRows: any[] = [];
+
+        students.forEach(student => {
+            const studentData = [
+                student.student_id,
+                student.email
+            ];
+            tableRows.push(studentData);
+        });
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20
+        });
+
+        doc.save('students-report.pdf');
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
+            <button onClick={generatePDF} className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded mb-4">
+                Generate PDF
+            </button>
             {students.map((student) => {
                 return (
                     <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={student.student_id}>
