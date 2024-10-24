@@ -64,7 +64,7 @@ export default function EditAdminAnnouncementForm({ announcement_id }: { announc
         };
 
         fetchAnnouncement();
-    }, []);
+    }, [id, reset]);
 
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)
