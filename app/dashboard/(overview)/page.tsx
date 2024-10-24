@@ -3,6 +3,7 @@ import Courses from "@/app/ui/student/course";
 import Announcements from "@/app/ui/dashboard/announcements"
 import React, { Suspense } from 'react';
 import Image from 'next/image';
+import GetLecturer from "@/app/ui/student/getlecturer";
 
 import { CoursesSkeleton, AnnouncementListSkeleton } from "@/app/ui/skeletons"
 
@@ -26,6 +27,7 @@ export default function Page() {
             <Suspense fallback={<AnnouncementListSkeleton />}>
                 <Announcements />
             </Suspense>
+            <GetLecturer/>
         </div>
     )
 } 

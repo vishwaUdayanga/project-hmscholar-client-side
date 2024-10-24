@@ -43,7 +43,7 @@ export default function Announcements() {
     }, []);
 
     return (
-        <div className="w-full">
+        <div className="w-full px-4 pt-0 pb-4">
             {announcements.map((announcement) => (
                 <div
                     className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5"
@@ -64,8 +64,8 @@ export default function Announcements() {
                         </div>
                     </div>
                     <div>
-                        <p className="text-sm">{announcement.title}</p>
-                        <p className="text-xs text-slate-400 mt-1">{announcement.description}</p>
+                        <p className="text-sm font-bold text-zinc-700">{announcement.title}</p>
+                        <p className="text-xs text-slate-400">{announcement.description}</p>
                     </div>
                     <div>
                         <p className="text-xs">00.00 AM</p>
@@ -73,6 +73,7 @@ export default function Announcements() {
                 </div>
             ))}
         </div>
+
     );
     
 }

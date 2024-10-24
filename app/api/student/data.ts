@@ -120,6 +120,16 @@ export  async function getSavedAnswersMcq({student_id,course_id,quiz_id,question
     }
 } 
 
+export async function getAllLecturerDetails() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/students/download/lecturer`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
 export  async function getSavedAnswersWritten({student_id,course_id,quiz_id,question_id }: {question_id:string,quiz_id:string,course_id:string,student_id:string}) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/student/quiz/given-answers/written/${student_id}/${course_id}/${quiz_id}/${question_id}`);

@@ -29,21 +29,22 @@ type Quiz = {
     is_enabled: boolean;
     attempts: number;
 };
-
 export default function At({ params }: { params: { quiz_id: string, id: string } }) {
     const { id } = params;
     const { quiz_id } = params;
     const [component, setComponent] = useState<JSX.Element | null>(null);
     const { control, handleSubmit } = useForm();
-    const [loading, setLoading] = useState(true); // Initialize as loading
+    const [loading, setLoading] = useState(true);
+    const [buttonLoading, setbuttonLoading] = useState(false);
+    const [buttonText,setButtonText] = useState('Enter')
 
     useEffect(() => {
         const fetchCourses = async () => {
-            setLoading(true); // Start loading
+            setLoading(true); 
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    window.location.href = '/'; // Redirect to home or login page
+                    window.location.href = '/'; 
                     return;
                 }
 
@@ -72,6 +73,9 @@ export default function At({ params }: { params: { quiz_id: string, id: string }
 
                 if (!student_attempt.ok) {
                     const onSubmit = async (data: any) => {
+
+                        setbuttonLoading(true)
+                        setButtonText('Loading...')
                         const { quiz_password } = data;
                         const response = await attemptQuiz({ course_id: id, quiz_id: quiz_id, student_id: studentID, quiz_password: quiz_password });
 
@@ -79,6 +83,8 @@ export default function At({ params }: { params: { quiz_id: string, id: string }
                             const errorData = await response.json();
                             console.error('Error details:', errorData);
                             alert('Wrong quiz password');
+                            setbuttonLoading(false)
+                            setButtonText('Enter')
                         } else {
                             window.location.href = `/dashboard/course/view-course/${id}/quiz/${quiz_id}/attempt/questions`;
                         }
@@ -108,9 +114,10 @@ export default function At({ params }: { params: { quiz_id: string, id: string }
 
                             <button 
                                 type="submit" 
+                                disabled={buttonLoading}
                                 className={`w-full py-2 px-4 rounded-md text-white border hover:border-black hover:text-black hover:bg-white bg-black`}
                             >
-                                Enter
+                                {buttonText}
                             </button>
                         </form>
                     );
@@ -139,7 +146,7 @@ export default function At({ params }: { params: { quiz_id: string, id: string }
             } catch (error) {
                 console.error('Error fetching courses:', error);
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(false);
             }
         };
 

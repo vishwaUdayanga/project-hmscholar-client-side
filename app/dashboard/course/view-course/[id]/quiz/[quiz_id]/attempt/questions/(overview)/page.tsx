@@ -255,31 +255,33 @@ const submitQuizOnTimeOut = async () => {
     }, [currentIndex, questions, studentID]);
 
     const handleNextQuestion = async () => {
-        if (currentIndex < questions.length - 1) {
+        if (currentIndex < questions.length - 1) 
             setCurrentIndex(currentIndex + 1);
-        } else {
-            const isConfirmed = window.confirm('Are you sure you want to submit the quiz?');
-            if (isConfirmed && studentID) {
-                try {
-                    const response = await submitStudentQuiz({
-                        student_id: studentID,
-                        quiz_id: quiz_id,
-                        course_id: id
-                    });
-                    if (response.ok) {
-                        localStorage.removeItem(`quiz_timer_${quiz_id}`);
-                        alert('Quiz submitted successfully.');
-                        window.location.href = `/dashboard/course/view-course/${id}`;
-                    } else {
-                        alert('Failed to submit quiz.');
-                    }
-                } catch (error) {
-                    console.error('Error submitting quiz:', error);
-                    alert('An error occurred while submitting the quiz.');
+    };
+
+    const handlequizSubmission= async ()=>
+    {
+        const isConfirmed = window.confirm('Are you sure you want to submit the quiz?');
+        if (isConfirmed && studentID) {
+            try {
+                const response = await submitStudentQuiz({
+                    student_id: studentID,
+                    quiz_id: quiz_id,
+                    course_id: id
+                });
+                if (response.ok) {
+                    localStorage.removeItem(`quiz_timer_${quiz_id}`);
+                    alert('Quiz submitted successfully.');
+                    window.location.href = `/dashboard/course/view-course/${id}`;
+                } else {
+                    alert('Failed to submit quiz.');
                 }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                alert('An error occurred while submitting the quiz.');
             }
         }
-    };
+    }
 
     const handlePreviousQuestion = () => {
         if (currentIndex > 0) {
@@ -334,76 +336,86 @@ const submitQuizOnTimeOut = async () => {
     return (
         <div className="quiz-container flex justify-center items-center">
             <div className="w-4/6">
-            <h1 className="font-bold mb-6">Quiz</h1>
-                         <div className="timer">
-                 <p className="mb-6">{formatTime(timeLeft)}</p>
-            </div>
-            {questions.length > 0 && (
-                <div>
-                    <p className="font-bold mb-4">{questions[currentIndex].questionText}</p>
-                    {questions[currentIndex].questionType === "written" && (
-                        <form>
-                            <textarea
-                                value={answers[questions[currentIndex].question_id] || ''}
-                                onChange={(e) => handleAnswerChange(e, questions[currentIndex].question_id)}
-                                placeholder="Write your answer here..."
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </form>
-                    )}
-                    {questions[currentIndex].questionType === "mcq" && (
-                        <form>
-                            {mcqAnswers.map((mcqAnswer) => (
-                                <div key={mcqAnswer.answer_id}>
-                                    <input
-                                        type="radio"
-                                        id={`answer-${mcqAnswer.answer_id}`}
-                                        name={questions[currentIndex].question_id}
-                                        value={mcqAnswer.answer_id}
-                                        checked={answers[questions[currentIndex].question_id] === mcqAnswer.answer_id}
-                                        onChange={(e) => handleAnswerChange(e, questions[currentIndex].question_id)}
-                                    />
-                                    <label htmlFor={`answer-${mcqAnswer.answer_id}`} className="ml-2">
-                                        {mcqAnswer.answer}
-                                    </label>
+                <h1 className="font-bold mb-6">Quiz</h1>
+                <div className="timer">
+                    <p className="mb-6">{formatTime(timeLeft)}</p>
+                </div>
+                {questions.length > 0 && (
+                    <div>
+                        <p className="font-bold mb-4">{questions[currentIndex].questionText}</p>
+                        {questions[currentIndex].questionType === "written" && (
+                            <form>
+                                <textarea
+                                    value={answers[questions[currentIndex].question_id] || ''}
+                                    onChange={(e) => handleAnswerChange(e, questions[currentIndex].question_id)}
+                                    placeholder="Write your answer here..."
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </form>
+                        )}
+                        {questions[currentIndex].questionType === "mcq" && (
+                            <form>
+                                {mcqAnswers.map((mcqAnswer) => (
+                                    <div key={mcqAnswer.answer_id}>
+                                        <input
+                                            type="radio"
+                                            id={`answer-${mcqAnswer.answer_id}`}
+                                            name={questions[currentIndex].question_id}
+                                            value={mcqAnswer.answer_id}
+                                            checked={answers[questions[currentIndex].question_id] === mcqAnswer.answer_id}
+                                            onChange={(e) => handleAnswerChange(e, questions[currentIndex].question_id)}
+                                        />
+                                        <label htmlFor={`answer-${mcqAnswer.answer_id}`} className="ml-2">
+                                            {mcqAnswer.answer}
+                                        </label>
+                                    </div>
+                                ))}
+                            </form>
+                        )}
+    
+                        <div className="flex justify-center space-x-2 mt-4">
+                            {questions.map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`w-10 h-10 flex items-center justify-center rounded-md cursor-pointer ${
+                                        currentIndex === index ? 'bg-black text-white' : 'bg-gray-200 text-black'
+                                    }`}
+                                    onClick={() => setCurrentIndex(index)}
+                                >
+                                    {index + 1}
                                 </div>
                             ))}
-                        </form>
-                    )}
-
-                    <div className="flex justify-center space-x-2 mt-4">
-                        {questions.map((_, index) => (
-                            <div
-                                key={index}
-                                className={`w-10 h-10 flex items-center justify-center rounded-md cursor-pointer ${
-                                    currentIndex === index ? 'bg-black text-white' : 'bg-gray-200 text-black'
-                                }`}
-                                onClick={() => setCurrentIndex(index)}
+                        </div>
+    
+                        <div className="flex justify-between mt-4">
+                            <button
+                                onClick={handlePreviousQuestion}
+                                className="py-2 px-4 bg-black text-white rounded-md"
+                                disabled={currentIndex === 0}
                             >
-                                {index + 1}
-                            </div>
-                        ))}
+                                Previous
+                            </button>
+    
+                            <button
+                                onClick={handleNextQuestion}
+                                className="py-2 px-4 bg-black text-white rounded-md"
+                            >
+                                Next
+                            </button>
+                        </div>
+    
+                        <div className="mt-6 w-full flex justify-center items-center">
+                            <button
+                                onClick={handlequizSubmission}
+                                className="w- py-2 px-4 bg-black text-white rounded-md"
+                            >
+                                Submit quiz and exit
+                            </button>
+                        </div>
                     </div>
-
-                    <div className="flex justify-between mt-4">
-                        <button
-                            onClick={handlePreviousQuestion}
-                            className="py-2 px-4 bg-black text-white rounded-md"
-                            disabled={currentIndex === 0}
-                        >
-                            Previous
-                        </button>
-
-                        <button
-                            onClick={handleNextQuestion}
-                            className="py-2 px-4 bg-black text-white rounded-md"
-                        >
-                            {currentIndex === questions.length - 1 ? 'Submit and Finish' : 'Next'}
-                        </button>
-                    </div>
-                </div>
-            )}
+                )}
             </div>
         </div>
     );
+    
 }
