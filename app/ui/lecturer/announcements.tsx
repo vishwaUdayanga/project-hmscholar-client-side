@@ -35,7 +35,7 @@ export default function Announcement({course_id} : {course_id: string}) {
         };
 
         fetchSections();
-    }, []);
+    }, [course_id]);
 
     const handleDelete = async (announcement_id: string) => {
         try {

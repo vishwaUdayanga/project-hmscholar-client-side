@@ -25,6 +25,22 @@ export default function EditLecturerForm({lecturer_id}: {lecturer_id: string}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [section, setSection] = useState<Lecturer>();
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [buttonText, setButtonText] = useState("Save Changes")
+
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
+        resolver: zodResolver(AddLecturersSchema),
+        mode: 'onTouched',
+        defaultValues: {
+            lecturer_name: '',
+            lecturer_nic: '',
+            lecturer_phone: '',
+            lecturer_email: '',
+            lecturer_password: ''
+        }
+    });
+
     useEffect(() => {
         const fetchSection = async () => {
             try {
@@ -51,22 +67,7 @@ export default function EditLecturerForm({lecturer_id}: {lecturer_id: string}) {
         };
 
         fetchSection();
-    }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [buttonText, setButtonText] = useState("Save Changes")
-
-    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
-        resolver: zodResolver(AddLecturersSchema),
-        mode: 'onTouched',
-        defaultValues: {
-            lecturer_name: '',
-            lecturer_nic: '',
-            lecturer_phone: '',
-            lecturer_email: '',
-            lecturer_password: ''
-        }
-    });
+    }, [lecturer_id, reset, section]);
     
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)

@@ -6,6 +6,7 @@ import { useForm, Controller, FieldError, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { createSection } from "@/app/api/lecturer/create"
+import React from "react"
 
 type FormValues = z.infer<typeof AddSectionSchema>
 
@@ -179,8 +180,24 @@ export default function AddSectionForm({course_id}: {course_id: string}) {
                                 )}
                             />
                         </div>
-                        {errors.files?.[index]?.file && <p className="text-red-600 text-sm">{(errors.files[index]?.file as FieldError)?.message || 'An error occurred'}</p>}
-                        {errors.files?.[index]?.name && <p className="text-red-600 text-sm">{errors.files[index]?.name?.message}</p>}
+                        {errors.files?.[index]?.file &&
+                            <div className="flex gap-2 items-center mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CD3C16" className="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg>                        
+                                <p className="text-red-600 text-sm">{(errors.files[index]?.file as FieldError)?.message || 'An error occurred'}</p>
+                            </div>
+                        }
+                        {errors.files?.[index]?.name &&
+                            <div className="flex gap-2 items-center mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CD3C16" className="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg> 
+                                <p className="text-red-600 text-sm">{errors.files[index]?.name?.message}</p>
+                            </div>
+                        }
                         <button type="button" onClick={() => remove(index)} className="text-sm px-4 py-1 bg-red-500 text-white rounded mt-3">Remove</button>
                     </div>
                     ))}
@@ -193,7 +210,13 @@ export default function AddSectionForm({course_id}: {course_id: string}) {
             </div>
             <div className="border-t-2 border-zinc-100 pt-5 flex justify-between w-full mt-10">
                 <button className="px-5 py-2 h-fit border rounded-md border-zinc-200 font-bold text-sm" type="button" onClick={handleClear}>Clear</button>
-                <button type="submit" className="px-5 py-2 h-fit rounded-md border border-zinc-200 font-bold text-sm">{buttonText}</button>
+                <button 
+                    type="submit"
+                    className="px-5 py-2 h-fit rounded-md border border-zinc-200 font-bold text-sm"
+                    disabled={isLoading}
+                    >
+                        {buttonText}
+                </button>
             </div>
         </form>
     )

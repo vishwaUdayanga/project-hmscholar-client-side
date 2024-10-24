@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import { getLecturer, getLecturerCourses } from "@/app/api/lecturer/data";
 import { CoursesSkeleton } from '@/app/ui/skeletons';
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Course = {
     course_id: string;
     course_name: string;
     year: number;
     enrollment_key: string;
+    course_image: string | null;
     semester: number;
     lecturer_name: string;
 };
@@ -32,8 +34,31 @@ const groupCoursesBySemester = (courses: Course[]) => {
 
 export default function Courses() {
     const [groupedCourses, setGroupedCourses] = useState<GroupedCourses>({});
+    const [filteredCourses, setFilteredCourses] = useState<GroupedCourses>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const query = searchParams.get('query');
+        if (!query) {
+            setFilteredCourses(groupedCourses);
+            return;
+        }
+
+        const filteredCourses = Object.keys(groupedCourses).reduce((acc: GroupedCourses, key) => {
+            const courses = groupedCourses[key].filter((course) => course.course_name.toLowerCase().includes(query.toLowerCase()));
+            if (courses.length) {
+                acc[key] = courses;
+            }
+            return acc;
+        }, {});
+
+        setFilteredCourses(filteredCourses);
+    }
+    , [searchParams, groupedCourses]);
+
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -78,7 +103,7 @@ export default function Courses() {
 
     return (
         <div className="flex flex-col gap-6 w-full lg:flex-row lg:gap-16">
-            {Object.keys(groupedCourses).map((semesterKey) => {
+            {Object.keys(filteredCourses).length >0 ? Object.keys(filteredCourses).map((semesterKey) => {
                 return (
                     <div key={semesterKey} className="w-full lg:w-4/12">
                         <p className="text-sm mb-4 text-gray-400">{semesterKey}</p>
@@ -90,7 +115,7 @@ export default function Courses() {
                                             <div className="flex gap-3 items-center w-80">
                                                 <div className="relative w-14 h-10 rounded overflow-hidden">
                                                     <Image
-                                                        src={'/dashboard/courses/1.jpg'}
+                                                        src={course.course_image ? `${course.course_image}?sp=r&st=2024-10-11T03:23:52Z&se=2024-10-26T11:23:52Z&spr=https&sv=2022-11-02&sr=c&sig=j9bm0r%2F1ublueF5hAeTTja5w7EUdkalfzZo%2BNw0zzZM%3D` : '/dashboard/courses/1.jpg'}
                                                         alt={course.course_name}
                                                         fill
                                                         style={{ objectFit: 'cover' }}
@@ -110,7 +135,7 @@ export default function Courses() {
                         </div>
                     </div>
                 )
-            })}
+            }) : <p>No courses to show...</p>}
         </div>
     );
 }

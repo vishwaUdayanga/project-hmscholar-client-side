@@ -5,6 +5,8 @@ import { getLecturers } from "@/app/api/admin/data";
 import Link from "next/link";
 import { deleteLecturer } from "@/app/api/admin/delete";
 import Image from "next/image";
+import { jsPDF } from 'jspdf'; 
+import 'jspdf-autotable';
 
 type Lecturer = {
     lecturer_id: string;
@@ -52,11 +54,41 @@ export default function Lecturers() {
         }
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("Lecturers Report", 14, 16);
+
+        const tableColumn = ["Name", "NIC", "Email", "Phone"];
+        const tableRows: any[] = [];
+
+        lecturers.forEach((lecturer) => {
+            const lecturerData = [
+                lecturer.lecturer_name,
+                lecturer.lecturer_nic,
+                lecturer.lecturer_email,
+                lecturer.lecturer_phone
+            ];
+            tableRows.push(lecturerData);
+        });
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20
+        });
+
+        doc.save("lecturers_report.pdf");
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
+            <button onClick={generatePDF} className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded mb-4">
+                Generate PDF
+            </button>
             {lecturers.map((lecturer) => {
                 return (
                     <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={lecturer.lecturer_id}>

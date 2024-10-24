@@ -89,3 +89,23 @@ export async function getAdminAnnouncement({ announcement_id }: { announcement_i
         throw error;
     }
 }
+
+export async function getAssignedLecturers({ course_id }: { course_id: string }) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/assigned_lecturers/${course_id}`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function getAllLecturers() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/get-all-lecturers`);
+        return response;
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}

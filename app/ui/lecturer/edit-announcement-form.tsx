@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { getAnnouncement } from "@/app/api/lecturer/data"
 import { updateAnnouncement } from "@/app/api/lecturer/update"
+import React from "react"
 
 
 type FormValues = z.infer<typeof AddAnnouncementSchema>
@@ -23,6 +24,19 @@ export default function EditAnnouncementForm({announcement_id}: {announcement_id
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [announcement, setAnnouncement] = useState<Announcement>();
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [buttonText, setButtonText] = useState("Save Changes")
+
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
+        resolver: zodResolver(AddAnnouncementSchema),
+        mode: 'onTouched',
+        defaultValues: {
+            title: '',
+            description: '',
+        }
+    });
+
     useEffect(() => {
         const fetchAnnouncement = async () => {
             try {
@@ -46,19 +60,7 @@ export default function EditAnnouncementForm({announcement_id}: {announcement_id
         };
 
         fetchAnnouncement();
-    }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [buttonText, setButtonText] = useState("Save Changes")
-
-    const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
-        resolver: zodResolver(AddAnnouncementSchema),
-        mode: 'onTouched',
-        defaultValues: {
-            title: '',
-            description: '',
-        }
-    });
+    }, [announcement_id, reset]);
     
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)

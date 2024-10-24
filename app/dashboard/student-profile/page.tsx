@@ -42,7 +42,7 @@ export default function StudentProfile() {
     };
 
     getEmail();
-  }, []);
+  }, [router]);
 
   if (loading) {
     return <p>Loading...</p>;
