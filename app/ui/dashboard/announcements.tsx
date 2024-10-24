@@ -63,12 +63,9 @@ export default function Announcements() {
                             <p className="text-sm font-bold text-zinc-700">{announcement.admin_name}</p>
                         </div>
                     </div>
-                    <div>
+                    <div className="ml-10 flex-1 min-w-[200px]">
                         <p className="text-sm font-bold text-zinc-700">{announcement.title}</p>
                         <p className="text-xs text-slate-400">{announcement.description}</p>
-                    </div>
-                    <div>
-                        <p className="text-xs">00.00 AM</p>
                     </div>
                 </div>
             ))}

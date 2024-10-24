@@ -30,7 +30,6 @@ export default function PortalSideNav({isToggle, actor}: {isToggle: boolean, act
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <PortalNavLinks isToggle={isToggle} actor={actor} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
-            {/* logout */}
             <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm hover:bg-slate-200 hover:text-black md:flex-none md:justify-start md:p-2 md:px-3" onClick={logout} >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#DD3545" className="bi bi-power" viewBox="0 0 16 16">
                   <path d="M7.5 1v7h1V1z"/>
