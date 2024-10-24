@@ -41,6 +41,7 @@ const admin_links = [
     icon: '/dashboard/course.png',
   },
   { name: 'Students', href: '/admin/dashboard/students', icon: '/dashboard/user.png' },
+  { name: 'Manage Content', href: '/admin/dashboard/manage-content', icon: '/dashboard/home.png' },
 ];
 
 const nportal_links = [

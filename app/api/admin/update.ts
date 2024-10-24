@@ -28,17 +28,32 @@ export async function updateCourse({ course_id, course_name, enrollment_key, cou
     }   
 }
 
-export async function updateStudent({ student_id ,email, password } : {student_id: string, email: string, password: string }) {   try {
+export async function updateStudent({ student_id ,email} : {student_id: string, email: string }) {   try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/edit_student/${student_id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email })
         });
         return response;
     }
     catch (error) {
+        console.error('Error occurred:', error);
+        throw error;
+    }
+}
+
+export async function updateAdminAnnouncement({ announcement_id, title, description} : { announcement_id: string, title: string, description: string}) {   try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API}/admin/edit_announcement/${announcement_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title, description })
+        });
+        return response;
+    } catch (error) {
         console.error('Error occurred:', error);
         throw error;
     }

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { getNewStudents } from '@/app/api/student-portal/new-student/data';
 import Link from 'next/link';
 import { confirmNewStudent } from '@/app/api/student-portal/new-student/update';
+import { jsPDF } from 'jspdf'; 
+import 'jspdf-autotable';
 
 type NewStudent = {
     newStudent_id: string;
@@ -56,11 +58,43 @@ export default function NewStudents({params} : {params: {id: string}}) {
         }
     }
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("New Students Report", 14, 16);
+
+        const tableColumn = ["Name", "Address", "Email", "Date", "Confirmed"];
+
+        const tableRows: any[] = [];
+
+        newStudents.forEach(student => {
+            const studentData = [
+                student.name,
+                student.address,
+                student.email,
+                student.date,
+                student.confirmed ? 'Yes' : 'No'
+            ];
+            tableRows.push(studentData);
+        });
+    
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20
+        });
+
+        doc.save('new-students-report.pdf');
+    };
+
     return (
         <div className="w-full p-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">New Students</h1>
             </div>
+            <button onClick={generatePDF} className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded mt-4">
+                Generate PDF
+            </button>
             <div className="mt-8">
                 {loading ? (
                     <div>Loading...</div>

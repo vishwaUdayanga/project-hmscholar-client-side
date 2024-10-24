@@ -1,79 +1,54 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getStudents } from "@/app/api/admin/data";
+import { getAdminAnnouncements } from "@/app/api/admin/data";
 import Link from "next/link";
-import { deleteStudent } from "@/app/api/admin/delete";
+import { deleteAdminAnnouncement } from "@/app/api/admin/delete";
 import Image from "next/image";
-import { jsPDF } from 'jspdf'; 
-import 'jspdf-autotable';
 
-type Student = {
-    student_id: string;
-    email: string;
+type Announcement = {
+    announcement_id: string;
+    title: string;
+    description: string;
+    admin_id: string;
 };
 
-export default function Students() {
+export default function AdminAnnouncements() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [students, setStudents] = useState<Student[]>([]);
-    useEffect(() => {
-        const fetchStudents = async () => {
-            try {
+    const [announcements, setAdminAnnouncements] = useState<Announcement[]>([]);
 
-                const sectionsResponse = await getStudents();
-                if (!sectionsResponse.ok) {
-                    throw new Error('Failed to fetch students');
+    useEffect(() => {
+        const fetchAdminAnnouncements = async () => {
+            try {
+                const response = await getAdminAnnouncements();
+                if (!response.ok) {
+                    throw new Error('Failed to fetch announcements');
                 }
-                const students: Student[] = await sectionsResponse.json();
-                setStudents(students);
+                const announcements: Announcement[] = await response.json();
+                setAdminAnnouncements(announcements);
             } catch (error) {
-                console.error('Error fetching students:', error);
-                setError('Error fetching students');
+                console.error('Error fetching announcements:', error);
+                setError('Error fetching announcements');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchStudents();
+        fetchAdminAnnouncements();
     }, []);
 
-    const handleDelete = async (studentId: string) => {
+    const handleDelete = async (announcementId: string) => {
         try {
-            const response = await deleteStudent({ studentId });
+            const response = await deleteAdminAnnouncement({ announcementId });
             if (!response.ok) {
-                throw new Error('Failed to delete student.');
+                throw new Error('Failed to delete announcement.');
             }
-            setStudents(students.filter(student => student.student_id !== studentId));
+            setAdminAnnouncements(announcements.filter(announcement => announcement.announcement_id !== announcementId));
         } catch (error) {
-            console.error('Error deleting student:', error);
-            setError('Error deleting student');
+            console.error('Error deleting announcement:', error);
+            setError('Error deleting announcement');
         }
-    };
-
-    const generatePDF = () => {
-        const doc = new jsPDF();
-
-        doc.text("Students Report", 14, 16);
-
-        const tableColumn = ["Student number", "Student email"];
-        const tableRows: any[] = [];
-
-        students.forEach(student => {
-            const studentData = [
-                student.student_id,
-                student.email
-            ];
-            tableRows.push(studentData);
-        });
-
-        (doc as any).autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 20
-        });
-
-        doc.save('students-report.pdf');
     };
 
     if (loading) return <p>Loading...</p>;
@@ -81,30 +56,27 @@ export default function Students() {
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
-            <button onClick={generatePDF} className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded mb-4">
-                Generate PDF
-            </button>
-            {students.map((student) => {
+            {announcements.map((announcement) => {
                 return (
-                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={student.student_id}>
+                    <div className="w-full flex items-center justify-between border-b-slate-300 border-b py-3 cursor-pointer flex-wrap gap-5" key={announcement.announcement_id}>
                         <div className="flex items-center gap-4">
                             <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                                <Image src='/dashboard/announcements/user.jpg' alt={student.student_id} fill style={{ objectFit: 'cover' }} className="rounded-full" />
+                                <Image src='/dashboard/announcements/user.jpg' alt={announcement.title} fill style={{ objectFit: 'cover' }} className="rounded-full" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-zinc-700">{student.email}</p>
-                                <p className="text-xs text-slate-400">{student.email}</p>
+                                <p className="text-sm font-bold text-zinc-700">{announcement.title}</p>
+                                <p className="text-xs text-slate-400">{announcement.description}</p>
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <Link href={`/admin/dashboard/students/edit-student/${student.student_id}`}>
+                            <Link href={`/admin/dashboard/manage-content/edit-announcements/${announcement.announcement_id}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#c026d3" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                     <path d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(student.student_id)} 
+                                onClick={() => handleDelete(announcement.announcement_id)} 
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
@@ -117,5 +89,9 @@ export default function Students() {
                 )
             })}
         </div>
-    );
+    ); 
+
+
+
 }
+

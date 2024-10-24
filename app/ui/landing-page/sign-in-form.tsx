@@ -159,6 +159,7 @@ export default function SignInForm() {
             </div>
             <button
                 type="submit"
+                name='lms'
                 onClick={() => setLoginTo('lms')}
                 className="w-full bg-black text-white py-2 rounded-md hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50 flex items-center justify-center text-sm sm:text-base mt-5"
                 disabled={isLoadingLms}
@@ -175,6 +176,7 @@ export default function SignInForm() {
             <p className='w-full text-center mt-4 text-sm text-zinc-500'>OR SIGN IN TO THE PORTAL</p>
             <button
                 type="submit"
+                name='portal'
                 onClick={() => setLoginTo('portal')}
                 className="w-full bg-sky-600 text-white py-2 rounded-md hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:ring-opacity-50 flex items-center justify-center text-sm sm:text-base mt-4"
             >
