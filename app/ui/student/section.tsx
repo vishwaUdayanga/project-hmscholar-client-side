@@ -51,7 +51,7 @@ export default function Sections({course_id} : {course_id: string}) {
         };
 
         fetchSections();
-    }, []);
+    }, [course_id]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;

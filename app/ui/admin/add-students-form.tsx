@@ -1,6 +1,6 @@
 'use client'
 
-import { AddStudentsSchema } from "@/app/lib/zod-schema"
+import { AddStudentsSchemaNew } from "@/app/lib/zod-schema"
 import { z } from "zod"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import { createStudent } from "@/app/api/admin/create"
 import React from "react"
 
-type FormValues = z.infer<typeof AddStudentsSchema>
+type FormValues = z.infer<typeof AddStudentsSchemaNew>
 
 export default function AddStudent() {
     // const router = useRouter()
@@ -17,7 +17,7 @@ export default function AddStudent() {
     const [buttonText, setButtonText] = useState("Save & Continue")
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
-        resolver: zodResolver(AddStudentsSchema),
+        resolver: zodResolver(AddStudentsSchemaNew),
         mode: 'onTouched',
         defaultValues: {
             email: '',

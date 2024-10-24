@@ -122,6 +122,16 @@ export const AddStudentsSchema = z.object({
         .email({message: 'Email is invalid'}),
 })
 
+export const AddStudentsSchemaNew = z.object({
+    email: z
+        .string({message: 'Email is required'})
+        .email({message: 'Email is invalid'}),
+    password: z
+        .string({message: 'Password is required'})
+        .min(8, {message: 'Password must be at least 8 characters long'})
+        .max(20, {message: 'Password must be at most 20 characters long'}),
+})
+
 export const AddQuizSchema = z.object({
     quiz_name: z
         .string({message: 'Quiz name is required'})
