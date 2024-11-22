@@ -34,15 +34,23 @@ export const AddSectionSchema = z.object({
         name: z.string({ message: 'File name is required' }).min(1),
         file: z
             .any()
-            .refine((fileList: FileList) => fileList.length > 0, { message: 'You must select a file' })
-            .refine((fileList: FileList) => {
+            .refine((fileList: FileList | undefined) => {
+                return fileList && fileList.length > 0;
+            }, { message: 'You must select a file' })
+            .refine((fileList: FileList | undefined) => {
+                if (!fileList || fileList.length === 0) return true;
                 const file = fileList[0];
-                return file ? file.size < 5000000 : false;
-            }, { message: 'File size should be less than 5MB' })
-            .refine((fileList: FileList) => {
+                return file.size < 5000000;
+            }, {
+                message: 'File size should be less than 5MB',
+            })
+            .refine((fileList: FileList | undefined) => {
+                if (!fileList || fileList.length === 0) return true;
                 const file = fileList[0];
-                return file ? ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type) : false;
-            }, { message: 'Only word documents and PDFs are allowed' }),
+                return ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+            }, {
+                message: 'Only word documents and PDFs are allowed',
+            }),
     })).max(5, { message: 'You can only upload up to 5 files' }),
 });
 

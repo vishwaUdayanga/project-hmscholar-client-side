@@ -18,6 +18,9 @@ export default function AdminAnnouncements() {
     const [error, setError] = useState<string | null>(null);
     const [announcements, setAdminAnnouncements] = useState<Announcement[]>([]);
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [announcementId, setAnnouncementId] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchAdminAnnouncements = async () => {
             try {
@@ -44,6 +47,7 @@ export default function AdminAnnouncements() {
             if (!response.ok) {
                 throw new Error('Failed to delete announcement.');
             }
+            alert('Announcement deleted successfully');
             setAdminAnnouncements(announcements.filter(announcement => announcement.announcement_id !== announcementId));
         } catch (error) {
             console.error('Error deleting announcement:', error);
@@ -76,7 +80,10 @@ export default function AdminAnnouncements() {
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(announcement.announcement_id)} 
+                                onClick={() => {
+                                    setShowDeleteModal(true);
+                                    setAnnouncementId(announcement.announcement_id);
+                                }}
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
@@ -88,6 +95,20 @@ export default function AdminAnnouncements() {
                     </div>
                 )
             })}
+            { showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-lg">
+                        <p>Are you sure you want to delete this announcement?</p>
+                        <div className="flex gap-4 mt-4">
+                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                            <button onClick={() => {
+                                handleDelete(announcementId!);
+                                setShowDeleteModal(false);
+                            }} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     ); 
 

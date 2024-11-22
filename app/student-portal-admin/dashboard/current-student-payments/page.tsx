@@ -75,7 +75,7 @@ export default function CurrentStudentPayments() {
                                         <td className="border px-4 py-2">{payment.email}</td>
                                         <td className="border px-4 py-2">{payment.date}</td>
                                         <td className="border px-4 py-2">
-                                            <a href={`${payment.receipt_path}?sp=r&st=2024-10-17T11:25:27Z&se=2024-10-25T19:25:27Z&spr=https&sv=2022-11-02&sr=c&sig=fIc3B1e2RetRdmyXmNe0NDm%2BHpXM3ddFMwnC9ut1T40%3D`} download className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                            <a href={`${payment.receipt_path}?sp=r&st=2024-10-31T18:18:25Z&se=2024-11-30T02:18:25Z&spr=https&sv=2022-11-02&sr=c&sig=l%2BiVz4yvbUgzqXTMSCdie1Xrtl33XnnI%2Fou4rLxlFTE%3D`} download className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
                                                 View
                                             </a>
                                         </td>

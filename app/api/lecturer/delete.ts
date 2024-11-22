@@ -46,7 +46,7 @@ export async function deleteAnnouncement({ announcement_id } : { announcement_id
                 'Content-Type': 'application/json'
             }
         });
-        return response;
+        return response.json();
     } catch (error) {
         console.error('Error occurred:', error);
         throw error;

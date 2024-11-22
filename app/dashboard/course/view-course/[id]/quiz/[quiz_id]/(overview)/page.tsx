@@ -108,7 +108,7 @@ export default function ViewQuiz({ params }: { params: { quiz_id: string, id:str
                             <div className="flex w-full justify-center items-center content-center gap-4 columns-2 ">
                             <Link 
                                 href={`/dashboard/course/view-course/${id}`}
-                                className="flex px-4  items-center justify-center bg-black text-white px-4 py-2 rounded-md hover:bg-white hover:text-black text-center border hover:border-black"
+                                className="flex px-4  items-center justify-center bg-black text-white py-2 rounded-md hover:bg-white hover:text-black text-center border hover:border-black"
                             >
                                 Go back
                             </Link>

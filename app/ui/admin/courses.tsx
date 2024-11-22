@@ -17,6 +17,10 @@ export default function Courses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [courses, setCourses] = useState<Course[]>([]);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [courseId, setCourseId] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -80,7 +84,10 @@ export default function Courses() {
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(course.course_id)} 
+                                onClick={() => {
+                                    setShowDeleteModal(true);
+                                    setCourseId(course.course_id);
+                                }}
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
@@ -92,6 +99,20 @@ export default function Courses() {
                     </div>
                 )
             })}
+            { showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-lg">
+                        <p>Are you sure you want to delete this course?</p>
+                        <div className="flex gap-4 mt-4">
+                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                            <button onClick={() => {
+                                handleDelete(courseId!);
+                                setShowDeleteModal(false);
+                            }} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

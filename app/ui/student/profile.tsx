@@ -70,7 +70,7 @@ export default function Profile(){
             className='relative w-8 h-8 rounded-full overflow-hidden'
         >
                     <Image
-            src={(studentData?.student_image) ? `${studentData?.student_image}?sp=r&st=2024-10-17T04:39:02Z&se=2024-10-26T12:39:02Z&spr=https&sv=2022-11-02&sr=c&sig=VFMrXTKd2ynhm%2F71aTfG7DzOdaFznvQIuggVndJyba4%3D` : '/dashboard/announcements/user.jpg'}
+            src={(studentData?.student_image) ? `${studentData?.student_image}?sp=r&st=2024-10-31T18:26:44Z&se=2024-11-30T02:26:44Z&spr=https&sv=2022-11-02&sr=c&sig=En9bJ%2FGt1pPHFezS0LesBcLF9T%2F2JAknD4PYxSGPv5I%3D` : '/dashboard/announcements/user.jpg'}
             alt={studentData?.name || 'User'}
             fill
             style={{ objectFit: 'cover' }}
