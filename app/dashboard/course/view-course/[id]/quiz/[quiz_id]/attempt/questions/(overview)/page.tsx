@@ -63,7 +63,7 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
     const [loading, setLoading] = useState(true);
     const [mcqAnswers, setMcqAnswers] = useState<McqAnswer[]>([]);
     const [answers, setAnswers] = useState<{ [key: string]: string }>({});
-    const [studentID, setStudentID] = useState<string | undefined>(undefined); // Allow undefined
+    const [studentID, setStudentID] = useState<string | undefined>(undefined); 
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -111,7 +111,7 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
             const quizResponse = await getStudentQuiz({ quiz_id });
             if (quizResponse.ok) {
                 const quizData: Quiz = await quizResponse.json();
-                const totalDuration = parseInt(quizData.quiz_duration)*60; // Convert minutes to seconds
+                const totalDuration = parseInt(quizData.quiz_duration)*60;
                 initializeTimer(totalDuration);
             }
         };
@@ -146,7 +146,6 @@ export default function At({ params }: { params: { quiz_id: string; id: string }
                     clearInterval(intervalRef.current!);
                     console.log('Timer reached zero, submitting quiz.');
                 
-                    // Submit the quiz when time reaches zero
                     if (studentID) {
                         submitQuizOnTimeOut();
                     }
@@ -174,7 +173,6 @@ const submitQuizOnTimeOut = async () => {
     
             if (response.ok) {
                 alert("Time's up! Quiz submitted successfully.");
-                // Reset the timer
                 localStorage.removeItem(`quiz_timer_${quiz_id}`);
                 window.location.href = `/dashboard/course/view-course/${id}`;
             } else {
