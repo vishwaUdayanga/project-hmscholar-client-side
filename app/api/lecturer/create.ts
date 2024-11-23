@@ -89,7 +89,8 @@ export async function createAnnouncement({ announcement_title, announcement_desc
             },
             body: JSON.stringify({ announcement_title, announcement_description, course_id: course_id })
         });
-        return response;
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error('Error occurred:', error);
         throw error;

@@ -31,16 +31,14 @@ export default function AddAnnouncementForm({course_id}: {course_id: string}) {
 
         try {
             const response = await createAnnouncement({ announcement_title: data.title, announcement_description: data.description, course_id: course_id });
-            if (response.ok) {
-                setIsLoading(false)
-                setButtonText('Save & Continue')
-                alert('Announcement added successfully')
-                handleClear()
-            } else {
-                setIsLoading(false)
-                setButtonText('Save & Continue')
-                alert('Error occurred while adding announcement')
+            console.log(response);
+            if (!response) {
+                throw new Error('Failed to create announcement');
             }
+            alert('Announcement created successfully');
+            reset();
+            setIsLoading(false)
+            setButtonText('Save & Continue')
         } catch (error) {
             console.error('Error occurred:', error);
             throw error;

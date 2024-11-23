@@ -20,6 +20,10 @@ export default function Lecturers() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lecturers, setLecturers] = useState<Lecturer[]>([]);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [lecturerId, setLecturerId] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchLecturers = async () => {
             try {
@@ -47,6 +51,7 @@ export default function Lecturers() {
             if (!response.ok) {
                 throw new Error('Failed to delete lecturer.');
             }
+            alert('Lecturer deleted successfully');
             setLecturers(lecturers.filter(lecturer => lecturer.lecturer_id !== lecturerId));
         } catch (error) {
             console.error('Error deleting announcement:', error);
@@ -82,7 +87,7 @@ export default function Lecturers() {
     };
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (error) return <p>Error: {error} (Lecturer has been assigned for courses)</p>;
 
     return (
         <div className="w-full px-4 pt-0 pb-4">
@@ -109,7 +114,10 @@ export default function Lecturers() {
                                 </svg>
                             </Link>
                             <button 
-                                onClick={() => handleDelete(lecturer.lecturer_id)} 
+                                onClick={() => {
+                                    setShowDeleteModal(true);
+                                    setLecturerId(lecturer.lecturer_id);
+                                }}
                                 className="text-red-600"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="text-rose-600" viewBox="0 0 16 16">
@@ -121,6 +129,20 @@ export default function Lecturers() {
                     </div>
                 )
             })}
+            { showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-lg">
+                        <p>Are you sure you want to delete this lecturer?</p>
+                        <div className="flex gap-4 mt-4">
+                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                            <button onClick={() => {
+                                handleDelete(lecturerId!);
+                                setShowDeleteModal(false);
+                            }} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
